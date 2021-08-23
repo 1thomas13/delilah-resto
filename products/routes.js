@@ -1,12 +1,11 @@
 const express = require("express")
-
 const router = express.Router()
 
 router.use(express.json())
 
-const products = require("../data/products.js")
+const products = require("./data.js")
 
-router.get("/menu", (req,res) =>{
+router.get("/menu", (req,res) => {
     res.json({"products":products})
 })
 
