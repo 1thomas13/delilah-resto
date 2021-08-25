@@ -10,12 +10,12 @@ router.get("/",(req,res) => {
     res.json({"users": users})
 })
 
-
+let id = 1
 //registro
 router.post("/",middle.emailValidate,(req,res) => {
    
     req.body.isAdmin = false
-
+    req.body.id = id++
     users.push(req.body)
     res.status(201).json({message:"Usuario creado correctamente"})
     

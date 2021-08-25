@@ -3,6 +3,7 @@ const users = require("../users/data.js")
 const products = require("../products/data.js")
 const orders = require("./data")
 
+
 const isLogged = ((req,res,next) => {
     findUser = users.find(users => users.id == req.params.id)
 
@@ -51,4 +52,10 @@ const isAdmin = ((req,res,next) => {
     else next()
 })
 
-module.exports = {isLogged,validateOrder,isAdmin}
+const statusValidate = ((req,res,next) => {
+    if(orders.status[req.body.status] == undefined) res.status(400).json({message:"El numero ingresado no pertenece a un estado de pedido"})
+
+    else next()
+})
+
+module.exports = {isLogged,validateOrder,isAdmin,statusValidate}

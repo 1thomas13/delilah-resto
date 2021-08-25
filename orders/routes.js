@@ -1,7 +1,6 @@
 const express = require("express")
 const router = express.Router()
 const products = require("../products/data.js")
-const users = require("../users/data.js")
 
 const data = require("./data.js")
 const middle = require("./middlewares.js")
@@ -11,22 +10,22 @@ const orders = data.orders
 router.use(express.json())
 
 router.get("/:id",middle.isLogged,middle.isAdmin,(req, res) => {
-    res.json({ orders: orders })
+    res.json({orders: orders })
 })
 
-/*router.put("/:numOrder",(req, res) => {
+router.put("/:id/:numOrder",middle.isLogged,middle.isAdmin,middle.statusValidate,(req, res) => {
 
     findOrder = orders.findIndex(orders => orders.numOrder == req.params.numOrder)
 
     if(findOrder == -1){
-        res.status(400).json("No hay una orden con ese numero. Intente con otro")
+        res.status(400).json({message:"No hay una orden con ese numero. Intente con otro"})
     }
     else{
         orders[findOrder].status = req.body.status
-        res.status(201).json(`Cambio de estado realizado con exito. El estado de la orden ${orders[findOrder].numOrder} es ${data.status[req.body.status]}`)
+        res.status(201).json({message:`Cambio de estado realizado con exito. El estado de la orden ${req.params.numOrder} es ${data.status[req.body.status]}`})
     }
    
-})*/
+})
 
 let numOrder = 0
 router.post("/:id", middle.isLogged, middle.validateOrder, (req, res) => {
