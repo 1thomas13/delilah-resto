@@ -1,15 +1,11 @@
 const express = require("express")
 const users = require("../users/data.js")
-const products = require("../products/data.js")
-const orders = require("./data")
-
+const paymentMethod = require("./data.js")
 
 const isLogged = ((req,res,next) => {
     findUser = users.find(users => users.id == req.params.id)
 
-    if(findUser == undefined){
-        return res.status(400).json({message:"El usuario no existe"})
-    } 
+    if(findUser == undefined) return res.status(400).json({message:"El usuario no existe"})
 
     if(findUser.isLogged == false){
         res.status(400).json({message:"Debes logearte primero"})   
@@ -31,15 +27,15 @@ const isAdmin = ((req,res,next) => {
     next()
 })
 
-const delete_modifyProduct = ((req,res,next) => {
+const delete_modifyMethod = ((req,res,next) => {
 
-    product= products.findIndex (products => products.id == req.params.productid)
+    index = paymentMethod.findIndex (paymentMethod => paymentMethod.id == req.params.paymentMethod)
 
-    if(product == -1){
-        res.status(400).json({message:"El id ingresado no pertenece a un producto"})
+    if(index == -1){
+        res.status(400).json({message:"El id ingresado no pertenece a un metodo de pago"})
         return
     }
     next()
 })
 
-module.exports = {isLogged,isAdmin,delete_modifyProduct}
+module.exports = {isLogged,isAdmin,delete_modifyMethod}

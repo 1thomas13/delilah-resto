@@ -5,23 +5,49 @@ const products = require("./data")
 
 router.use(express.json())
 
-router.get("/menu/:id",middle.isLogged,middle.isAdmin,(req,res) => {
-    res.json({"products":products})
+router.get("/:id", middle.isLogged, middle.isAdmin, (req, res) => {
+    res.json({ "products": products })
 })
 
 let id = 3
-// router.post("/menu/:id",middle.isLogged,middle.isAdmin,(req,res) => {
+router.post("/:id", middle.isLogged, middle.isAdmin, (req, res) => {
 
-//     req.body.id = id++
-//     products.push(req.body)
+    const {name,price,available} = req.body
 
-//     res.status(201).json({message:"Producto agregado!"})
-// })
+    const newProduct = {
+        id: id++,
+        name: name,
+        price: price,
+        available: available 
+    }
 
-// router.delete("/menu/:id/:productid",middle.isLogged,middle.isAdmin,middle.deleteProduct,(req,res) => {
+    products.push(newProduct)
 
-//     products.splice(removed,1)
-//     res.status(200).json({message:"Producto eliminado!"})
-// })
+    res.status(201).json({ message: "Producto agregado!" })
+})
+
+router.put("/:id/:productid", middle.isLogged, middle.isAdmin,middle.delete_modifyProduct,(req, res) => {
+
+    const {name,price,available} = req.body
+
+    const productChanged = {
+        name: name,
+        price: price,
+        available: available 
+    }
+
+    products[product].name = name
+    products[product].price = price
+    products[product].available = available
+
+
+    res.status(200).json({ message: "Producto modificado!" })
+})
+
+router.delete("/:id/:productid", middle.isLogged, middle.isAdmin, middle.delete_modifyProduct, (req, res) => {
+
+    products.splice(product, 1)
+    res.status(200).json({ message: "Producto eliminado!" })
+})
 
 module.exports = router

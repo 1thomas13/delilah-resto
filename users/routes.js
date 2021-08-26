@@ -6,7 +6,8 @@ const middle = require("./middlewares")
 
 router.use(express.json())
 
-router.get("/",(req,res) => {
+//mostrar usuarios
+router.get("/:id",middle.isLogged,middle.isAdmin,(req,res) => {
     res.json({"users": users})
 })
 
@@ -14,9 +15,21 @@ let id = 1
 //registro
 router.post("/",middle.emailValidate,(req,res) => {
    
-    req.body.isAdmin = false
-    req.body.id = id++
-    users.push(req.body)
+    const {name,username,password,email,numberPhone,address} = req.body
+
+    const newUser = {
+        id:id++,
+        name:name,
+        username:username,
+        password:password,
+        email:email,
+        numberPhone:numberPhone,
+        address:address,
+        isAdmin: false,
+        isLogged: false
+    }
+
+    users.push(newUser)
     res.status(201).json({message:"Usuario creado correctamente"})
     
 })
@@ -26,7 +39,7 @@ router.post("/",middle.emailValidate,(req,res) => {
 router.post("/login",middle.validateLogin,(req,res) => {
 
     findUser.isLogged = true
-    res.status(200).json({message:`Sesion iniciada. Bienvenido ${findUser.nameuser}`})
+    res.status(200).json({message:`Sesion iniciada. Bienvenido ${findUser.username}`})
     
 })
 
