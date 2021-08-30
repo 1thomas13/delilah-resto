@@ -30,12 +30,6 @@ router.put("/:id/:productid", middle.isLogged, middle.isAdmin,middle.delete_modi
 
     const {name,price,available} = req.body
 
-    const productChanged = {
-        name: name,
-        price: price,
-        available: available 
-    }
-
     products[product].name = name
     products[product].price = price
     products[product].available = available

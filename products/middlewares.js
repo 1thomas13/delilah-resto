@@ -33,7 +33,7 @@ const isAdmin = ((req,res,next) => {
 
 const delete_modifyProduct = ((req,res,next) => {
 
-    product= products.findIndex (products => products.id == req.params.productid)
+    product = products.findIndex (products => products.id == req.params.productid)
 
     if(product == -1){
         res.status(400).json({message:"El id ingresado no pertenece a un producto"})

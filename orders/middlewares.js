@@ -1,7 +1,8 @@
 const express = require("express")
 const users = require("../users/data.js")
 const products = require("../products/data.js")
-const orders = require("./data")
+const data = require("./data")
+const orders = data.orders
 const paymentMethod = require("../paymentMethod/data")
 
 
@@ -24,21 +25,27 @@ const validateOrder = ((req,res,next) => {
     if(req.body.order.amount < 1){
         res.status(400).json({message:"La cantidad del producto seleccionado debe ser superior a 0"})
         return
-    }
-
-    if(products[req.body.order.productId-1] == undefined || products[req.body.order.productId-1].available == false){
-        res.status(400).json({message:"Lo sentimos, el producto no se encuentra disponible"})
-        return
-    }
-    
+    }1
+ 
     payment = paymentMethod.find( paymentMethod => req.body.paymentMethodId == paymentMethod.id)
-
+ 
     if(payment == undefined){
         res.status(400).json({message:"El metodo de pago no existe"})
         return
     }
 
+    req.body.order.forEach((orders,i) => {
+
+        productsIndex = products.findIndex(products => products.id == req.body.order[i].productId)
+
+        if(products[productsIndex].available == false || productsIndex == -1) {
+            res.status(400).json({message:"Lo sentimos, el producto no se encuentra disponible"})
+            return
+        }  
+    })
+
     next()
+    
 })
 
 const isAdmin = ((req,res,next) => {
@@ -53,7 +60,7 @@ const isAdmin = ((req,res,next) => {
 })
 
 const statusValidate = ((req,res,next) => {
-    if(orders.status[req.body.status] == undefined){
+    if(data.status[req.body.status] == undefined){
         res.status(400).json({message:"El numero ingresado no pertenece a un estado de pedido"})
         return
     } 
@@ -61,4 +68,52 @@ const statusValidate = ((req,res,next) => {
     next()
 })
 
-module.exports = {isLogged,validateOrder,isAdmin,statusValidate}
+const confirmOrder = ((req,res,next) => {
+
+    findOrder = orders.findIndex(orders => orders.numOrder == req.params.numOrder && orders.userId == req.params.id)
+
+    if(findOrder == -1){
+        res.status(400).json({message:`No puede confirmar el pedido seleccionado`})
+        return
+    }
+
+    if(orders[findOrder].status == 1){
+        res.status(400).json({message:`El pedido ya esta confirmado`})
+        return
+    }
+
+    next()
+})
+
+const calculateTotal = (req) => {
+   let total = 0
+    req.body.order.forEach((orders,i) => {
+
+        productsIndex = products.findIndex(products => products.id == req.body.order[i].productId)  
+
+        total = total + products[productsIndex].price * req.body.order[i].amount
+    })
+
+    return total
+}
+
+const modifyOrder = ((req,res,next) => {
+
+    findOrder = orders.findIndex(orders => orders.numOrder == req.params.numOrder && orders.userId == req.params.id)
+
+    if(findOrder == -1){
+        res.status(400).json({message:`No puede modificar el pedido seleccionado`})
+        return
+    }
+
+    if(orders[findOrder].status != 0){
+        res.status(400).json({message:`No puede modificar el pedido por que ya fue confirmado`})
+        return
+    }
+
+    next()
+})
+
+
+
+module.exports = {isLogged,validateOrder,isAdmin,statusValidate,confirmOrder,modifyOrder,calculateTotal}
