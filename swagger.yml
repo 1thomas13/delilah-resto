@@ -1,0 +1,512 @@
+openapi: "3.0.0"
+info:
+  title: API-Delilah-Resto
+  version: "0.1"
+  description: Api para el restaurante Delilah Resto
+
+servers:
+  - url: http://localhost:3000
+
+##users
+  #Mostrar todos los usuarios
+paths:
+  /users/{id}:
+    get:
+      description: Mostrar usuarios
+      responses:
+        "200":
+          description: Muestra los usuarios con sus datos y solo el administrador puede verlos
+
+        "400":
+          description: Debes logearte y ser administrador
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {'message': Debes estar logeado y ser administrador para mostrar los usuarios'}
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ingresar el  ID del usuario
+
+  #Crear usuario
+  /users:
+    post:
+      description: Crear usuario
+      responses:
+        "201":
+          description: Usuario creado
+        "400":
+          description: email repetido
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {'message': Ya existe una cuenta con ese mail'}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: name
+                  example: thomas
+                username:
+                  type: string
+                  description: nombre de usuario
+                  example: 1thomas13
+                password:
+                  type: string
+                  description: constraseña
+                  example: 123asd
+                email:
+                  type: string
+                  description: Email del usuario
+                  example: thomas@gmail.com
+                numberPhone:
+                  type: integer
+                  description: numero de telefono
+                  example: 123456
+                address:
+                  type: string
+                  description: domicilio
+                  example: belgrano 123
+                isAdmin:
+                  type: boolean
+                  description: Usuario administrador(siempre con usuarios creados va a devolver falso)
+                  example: true
+                isLogged:
+                  type: boolean
+                  description: Muestra si el usuario esta logeado
+                  example: true
+
+  #logeo
+  /users/login:
+    post:
+      description: logeo
+      responses:
+        "201":
+          description: Sesion iniciada
+        "400":
+          description: error de coincidencia
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {'message': El nombre de usuario o el email no coincide con la contraseña'}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: Nombre de usuario
+                  example: 1thomas13
+                email:
+                  type: string
+                  description: email del usuario
+                  example: thomi@gmail.com
+                password:
+                  type: string
+                  description: Contraseña del usuario
+                  example: hola1235
+
+#orders
+  #mostrar ordenes
+
+  /order/{id}:
+    get:
+      description: Mostrar pedidos u ordenes de todos los usuarios
+      responses:
+        "200":
+          description: Muestra las ordenes satisfactoriamente
+            sucess
+        "400":
+          description: Se requiere de estar logeo y ser admin
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {'message': Debes estar logeado y ser administrador para ver los pedidos'}
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ingresar el  ID del usuario
+
+  #Cambiar estado de una orden
+  /orders/status/{id}/{numOrder}:
+    put:
+      description: Permite modificar el estado de los pedidos
+      responses:
+        "200":
+          description: estado del pedido modificado
+            sucess
+        "400":
+          description: Se requiere de estar logeo y ser admin
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {'message': Debes estar logeado y ser administrador para modificar el estado'}
+        "404":
+          description: El numero de orden y el numero de pedido tienen que existir
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {'message':  Debes ingresar un estado y  numero de pedido valido'}
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ingresar el  ID del usuario
+
+        - in: path
+          name: numOrder
+          schema:
+            type: integer
+          required: true
+          description: ingresar el numero de orden
+
+  #Crear pedidos
+  /orders/{id}:
+    post:
+      description: Permite crear pedidos
+      responses:
+        "200":
+          description: Pedido creado
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {'message': El total es de 100$ y el pago seleccionado es efectivo. Debe confirmar el pedido para continuar'}
+        "400":
+          description: Se requiere de estar logeado
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {'message': Debes estar logeado, el producto debe estar disponible y el metodo de pago debe ser existente'}
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ingresar el  ID del usuario
+
+  #confirmar pedidos
+  /orders/confirm/{id}/{numOrder}:
+    get:
+      description: Permite a los usuarios confirmar sus pedidos
+      responses:
+          "201":
+            description: Pedido confirmado
+            content:
+              application/json:
+                schema:
+                  type: object
+                  example: {'message': Se confirmo el pedido'}
+          "400":
+            description: Se requiere de estar logeado y el numero de orden tiene que existir y pertenecer al usuario
+            content:
+              application/json:
+                schema:
+                  type: object
+                  example: {'message': Debes estar logeado, y el numero de orden tiene que ser valido'}
+      parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+            required: true
+            description: ingresar el  ID del usuario
+
+          - in: path
+            name: numOrder
+            schema:
+              type: integer
+            required: true
+            description: ingresar el numero de orden a confirmar
+  
+  #Modificar pedidos
+  /orders/{id}/{numOrder}:
+    get:
+      description: Permite modificar el pedido siempre y cuando el mismo no este confirmado 
+      responses:
+          "201":
+            description: Pedido modificado
+            content:
+              application/json:
+                schema:
+                  type: object
+                  example: {'message': pedido modificado'}
+          "400":
+            description: Se requiere de estar logeado, el pedido debe ser valido, no debe estar confirmado y debe pertenecer al usuario
+            content:
+              application/json:
+                schema:
+                  type: object
+                  example: {'message': No puede modificar el pedido seleccionado'}
+      parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+            required: true
+            description: ingresar el  ID del usuario
+
+          - in: path
+            name: numOrder
+            schema:
+              type: integer
+            required: true
+            description: ingresar el numero de orden a confirmar
+
+#Mostrar historial de el usuario
+  /orders/history/{id}:
+    get:
+      description: Permite a los usuarios ver su historial
+      responses:
+          "201":
+            description: Pedido modificado
+          "400":
+            description: Se requiere de estar logeado, y tener pedidos
+            content:
+              application/json:
+                schema:
+                  type: object
+                  example: {'message': No hiciste ningun pedido'}
+      parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+            required: true
+            description: ingresar el  ID del usuario
+
+#PRODUCTOS
+
+  /products/{id}:
+    get:
+      description: Permite a los administradores ver el menu de los productos existentes
+      responses:
+          "200":
+            description: Muestra los productos
+          "400":
+            description: Se requiere de estar logeado  y ser administrador
+            content:
+              application/json:
+                schema:
+                  type: object
+                  example: {'message': No estas logeado'}
+      parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+            required: true
+            description: ingresar el  ID del usuario
+        
+  /products/{id}:
+    post:
+      description: Permite a los administradores agregar productos
+      responses:
+          "200":
+            description: Agrega un producto
+            content:
+              application/json:
+                schema:
+                  type: object
+                  example: {'message': Producto agregado!}
+          "400":
+            description: Se requiere de estar logeado  y ser administrador
+            content:
+              application/json:
+                schema:
+                  type: object
+                  example: {'message': No estas logeado'}
+      parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+            required: true
+            description: ingresar el  ID del usuario
+
+  /products/{id}/{productid}:
+    put:
+      description: Permite a los administradores modificar productos
+      responses:
+          "200":
+            description: Modifica un producto
+            content:
+              application/json:
+                schema:
+                  type: object
+                  example: {'message': Producto modificado!}
+          "400":
+            description: Se requiere de estar logeado  y ser administrador
+            content:
+              application/json:
+                schema:
+                  type: object
+                  example: {'message': No estas logeado'}
+      parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+            required: true
+            description: ingresar el  ID del usuario
+          - in: path
+            name: id
+            schema:
+              type: integer
+            required: true
+            description: Ingresar el id del producto a modificar
+        
+   /products/{id}/{productid}:
+    delete:
+      description: Permite a los administradores eliminar productos
+      responses:
+          "200":
+            description: Elimina un producto
+            content:
+              application/json:
+                schema:
+                  type: object
+                  example: {'message': Producto eliminado!}
+          "400":
+            description: Se requiere de estar logeado  y ser administrador
+            content:
+              application/json:
+                schema:
+                  type: object
+                  example: {'message': No estas logeado'}
+      parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+            required: true
+            description: ingresar el  ID del usuario
+          - in: path
+            name: id
+            schema:
+              type: integer
+            required: true
+            description: Ingresar el id del producto a modificar
+
+#Metodos de pago
+
+  /payment/{id}:
+    get:
+      description: Permite a los administradores ver los metodos de pago
+      responses:
+          "200":
+            description: Muestra los metodos de pago
+          "400":
+            description: Se requiere de estar logeado  y ser administrador
+            content:
+              application/json:
+                schema:
+                  type: object
+                  example: {'message': No estas logeado'}
+      parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+            required: true
+            description: ingresar el  ID del Usuario
+        
+  /payment/{id}:
+    post:
+      description: Permite a los administradores crear metodos de pago
+      responses:
+          "200":
+            description: Metodo de pago creado
+            content:
+              application/json:
+                schema:
+                  type: object
+                  example: {'message': Metodo de pago creado!}
+          "400":
+            description: Se requiere de estar logeado  y ser administrador
+            content:
+              application/json:
+                schema:
+                  type: object
+                  example: {'message': No estas logeado'}
+      parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+            required: true
+            description: ingresar el  ID del usuario
+
+  /payment/{id}/{:paymentMethod}:
+    put:
+      description: Permite a los administradores editar metodos de pago
+      responses:
+          "200":
+            description: Modifica los metodos de pago
+            content:
+              application/json:
+                schema:
+                  type: object
+                  example: {'message': Metodo de pago creado!}
+          "400":
+            description: error- Se requiere de estar logeado  y ser administrador
+            content:
+              application/json:
+                schema:
+                  type: object
+                  example: {'message': No estas logeado'}
+      parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+            required: true
+            description: ingresar el  ID del usuario
+
+  /payment/{id}/{:paymentMethod}:
+    post:
+      description: Permite a los administradores eliminar metodos de pago
+      responses:
+          "200":
+            description: Modifica los metodos de pago
+            content:
+              application/json:
+                schema:
+                  type: object
+                  example: {'message': Metodo de pago eliminado!}
+          "400":
+            description: error- Se requiere de estar logeado  y ser administrador
+            content:
+              application/json:
+                schema:
+                  type: object
+                  example: {'message': No estas logeado'}
+      parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+            required: true
+            description: ingresar el  ID del usuario

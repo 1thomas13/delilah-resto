@@ -5,7 +5,7 @@ const products = require("./data")
 
 router.use(express.json())
 
-router.get("/:id", middle.isLogged, middle.isAdmin, (req, res) => {
+router.status(201).get("/:id", middle.isLogged, middle.isAdmin, (req, res) => {
     res.json({ "products": products })
 })
 

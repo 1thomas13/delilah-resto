@@ -12,7 +12,7 @@ const isLogged = ((req,res,next) => {
     } 
 
     if(findUser.isLogged == false){
-        res.status(400).json({message:"Debes logearte primero"})   
+        res.status(403).json({message:"Debes logearte primero"})   
         return
     }
     
@@ -24,7 +24,7 @@ const isAdmin = ((req,res,next) => {
     admin = users.find(users => users.id == req.params.id && users.isAdmin == true)
 
     if(admin == undefined) {
-        res.status(400).json({message:"Debes ser administrador para acceder"}) 
+        res.status(403).json({message:"Debes ser administrador para acceder"}) 
         return
     }
     

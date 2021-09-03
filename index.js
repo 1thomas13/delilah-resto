@@ -1,6 +1,11 @@
 const express = require("express")
 const app = express()
 const config = require("./config.js")
+const cors = require('cors')
+app.use(cors());
+
+
+
 
 const users = require("./users/routes")
 const products = require("./products/routes")

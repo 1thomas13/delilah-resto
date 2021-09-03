@@ -21,7 +21,7 @@ router.put("/status/:id/:numOrder",middle.isLogged,middle.isAdmin,middle.statusV
     findOrder = orders.findIndex(orders => orders.numOrder == req.params.numOrder)
 
     if(findOrder == -1){
-        res.status(400).json({message:"No hay una orden con ese numero. Intente con otro"})
+        res.status(404).json({message:"No hay una orden con ese numero. Intente con otro"})
     }
     else{
         orders[findOrder].status = req.body.status

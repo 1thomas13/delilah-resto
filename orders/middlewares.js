@@ -12,7 +12,7 @@ const isLogged = ((req,res,next) => {
     if(findUser == undefined) return res.status(400).json({message:"El usuario no existe"})
 
     if(findUser.isLogged == false){
-        res.status(400).json({message:"Debes logearte primero"})   
+        res.status(403).json({message:"Debes logearte primero"})   
         return
     }
     
@@ -38,8 +38,8 @@ const validateOrder = ((req,res,next) => {
 
         productsIndex = products.findIndex(products => products.id == req.body.order[i].productId)
 
-        if(products[productsIndex].available == false || productsIndex == -1) {
-            res.status(400).json({message:"Lo sentimos, el producto no se encuentra disponible"})
+        if(!products[productsIndex] || products[productsIndex].available == false || productsIndex == -1 ) {
+            res.status(400).json({message:"Lo sentimos, un producto seleccionado no se encuentra disponible"})
             return
         }  
     })
@@ -52,7 +52,7 @@ const isAdmin = ((req,res,next) => {
     admin = users.find(users => users.id == req.params.id && users.isAdmin == true)
 
     if(admin == undefined) {
-        res.status(400).json({message:"Debes ser administrador para acceder"}) 
+        res.status(403).json({message:"Debes ser administrador para acceder"}) 
         return
     }
     
@@ -61,7 +61,7 @@ const isAdmin = ((req,res,next) => {
 
 const statusValidate = ((req,res,next) => {
     if(data.status[req.body.status] == undefined){
-        res.status(400).json({message:"El numero ingresado no pertenece a un estado de pedido"})
+        res.status(404).json({message:"El numero ingresado no pertenece a un estado de pedido"})
         return
     } 
 
@@ -85,18 +85,6 @@ const confirmOrder = ((req,res,next) => {
     next()
 })
 
-const calculateTotal = (req) => {
-   let total = 0
-    req.body.order.forEach((orders,i) => {
-
-        productsIndex = products.findIndex(products => products.id == req.body.order[i].productId)  
-
-        total = total + products[productsIndex].price * req.body.order[i].amount
-    })
-
-    return total
-}
-
 const modifyOrder = ((req,res,next) => {
 
     findOrder = orders.findIndex(orders => orders.numOrder == req.params.numOrder && orders.userId == req.params.id)
@@ -114,6 +102,16 @@ const modifyOrder = ((req,res,next) => {
     next()
 })
 
-
+const calculateTotal = (req) => {
+    let total = 0
+     req.body.order.forEach((orders,i) => {
+ 
+         productsIndex = products.findIndex(products => products.id == req.body.order[i].productId)  
+ 
+         total = total + products[productsIndex].price * req.body.order[i].amount
+     })
+ 
+     return total
+ }
 
 module.exports = {isLogged,validateOrder,isAdmin,statusValidate,confirmOrder,modifyOrder,calculateTotal}
