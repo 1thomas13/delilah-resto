@@ -13,7 +13,7 @@ Proyecto de el curso backend de [Acamica]
 # Inicialización del proyecto
 
 [Clonar el repositorio: ] Para clonarlo abra la consola de comandos e ingrese:
-    git clone (https://gitlab.com/-/experiment/new_project_readme_content:7579881e9c35cfc2c581fa1969b8499e?https://docs.gitlab.com/eeuser/project/integrations/)
+    git clone https://gitlab.com/-/experiment/new_project_readme_content:7579881e9c35cfc2c581fa1969b8499e?https://docs.gitlab.com/eeuser/project/integrations/
 
 [Instalar dependencias: ]
 
