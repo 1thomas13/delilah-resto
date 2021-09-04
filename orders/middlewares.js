@@ -77,7 +77,7 @@ const confirmOrder = ((req,res,next) => {
         return
     }
 
-    if(orders[findOrder].status == 1){
+    if(orders[findOrder].status >= 1){
         res.status(400).json({message:`El pedido ya esta confirmado`})
         return
     }

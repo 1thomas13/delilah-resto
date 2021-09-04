@@ -11,7 +11,7 @@ const orders = data.orders
 router.use(express.json())
 
 //mostrar pedidos
-router.get("/:id",middle.isLogged,middle.isAdmin,(req, res) => {
+router.get("/allOrders/:id",middle.isLogged,middle.isAdmin,(req, res) => {
     res.json({orders: orders })
 })
 
@@ -31,7 +31,7 @@ router.put("/status/:id/:numOrder",middle.isLogged,middle.isAdmin,middle.statusV
 })
 
 //hacer pedido
-let numOrder = 0
+let numOrder = 1
 router.post("/:id", middle.isLogged, middle.validateOrder, (req, res) => {
 
     const date = new Date

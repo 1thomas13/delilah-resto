@@ -7,12 +7,13 @@ info:
 servers:
   - url: http://localhost:3000
 
-##users
-  #Mostrar todos los usuarios
 paths:
   /users/{id}:
     get:
-      description: Mostrar usuarios
+      tags:
+        - Usuarios/Users
+      summary: Mostrar todos los usuarios
+      description: Muestra todos los usuarios. Requiere se ADMIN
       responses:
         "200":
           description: Muestra los usuarios con sus datos y solo el administrador puede verlos
@@ -23,7 +24,7 @@ paths:
             application/json:
               schema:
                 type: object
-                example: {'message': Debes estar logeado y ser administrador para mostrar los usuarios'}
+                example: {'message': Debes estar logeado'}
       parameters:
         - in: path
           name: id
@@ -32,15 +33,17 @@ paths:
           required: true
           description: ingresar el  ID del usuario
 
-  #Crear usuario
   /users:
     post:
-      description: Crear usuario
+      tags:
+        - Usuarios/Users
+      summary: Crear usuario
+      description: Permite crear usuarios
       responses:
         "201":
           description: Usuario creado
         "400":
-          description: email repetido
+          description: Email repetido
           content:
             application/json:
               schema:
@@ -85,10 +88,12 @@ paths:
                   description: Muestra si el usuario esta logeado
                   example: true
 
-  #logeo
   /users/login:
     post:
-      description: logeo
+      tags:
+        - Usuarios/Users
+      summary: Login
+      description: Permite logearse
       responses:
         "201":
           description: Sesion iniciada
@@ -118,12 +123,12 @@ paths:
                   description: Contraseña del usuario
                   example: 123asd
 
-#orders
-  #mostrar ordenes
-
-  /order/{id}:
+  /orders/allOrders/{id}:
     get:
-      description: Mostrar pedidos u ordenes de todos los usuarios
+      tags:
+        - Pedidos/Orders
+      summary: Mostrar todas las ordenes
+      description: Muestra las ordenes. Requiere se ADMIN
       responses:
         "200":
           description: Muestra las ordenes satisfactoriamente
@@ -134,7 +139,7 @@ paths:
             application/json:
               schema:
                 type: object
-                example: {'message': Debes estar logeado y ser administrador para ver los pedidos'}
+                example: {'message': No estar logeado'}
       parameters:
         - in: path
           name: id
@@ -143,13 +148,15 @@ paths:
           required: true
           description: ingresar el  ID del usuario
 
-  #Cambiar estado de una orden
   /orders/status/{id}/{numOrder}:
     put:
-      description: Permite modificar el estado de los pedidos
+      tags:
+        - Pedidos/Orders
+      summary: Cambiar el estado de una orden
+      description: Cambia el estado de las ordenes. Requiere ser ADMIN
       responses:
         "200":
-          description: estado del pedido modificado
+          description: Estado del pedido modificado
             sucess
         "400":
           description: Se requiere de estar logeo y ser admin
@@ -157,14 +164,14 @@ paths:
             application/json:
               schema:
                 type: object
-                example: {'message': Debes estar logeado y ser administrador para modificar el estado'}
+                example: {'message': Debes ser administrador'}
         "404":
           description: El numero de orden y el numero de pedido tienen que existir
           content:
             application/json:
               schema:
                 type: object
-                example: {'message':  Debes ingresar un estado y  numero de pedido valido'}
+                example: {'message': El numero de orden no existe'}
       parameters:
         - in: path
           name: id
@@ -189,14 +196,16 @@ paths:
                 status:
                   type: integer
                   description: Se ingresa un numero de estado para modificar el pedido
-                  example: 1thomas13
+                  example: 2
 
-  #Crear pedidos
   /orders/{id}:
     post:
-      description: Permite crear pedidos
+      tags:
+        - Pedidos/Orders
+      summary: Crear pedidos
+      description: Permite crear pedidos. Si hacer un pedido con mas de 1 producto se debe agregar otro objeto al array con sus 2 propiedades(productId y amount)
       responses:
-        "200":
+        "201":
           description: Pedido creado
           content:
             application/json:
@@ -204,12 +213,12 @@ paths:
                 type: object
                 example: {'message': El total es de 100$ y el pago seleccionado es efectivo. Debe confirmar el pedido para continuar'}
         "400":
-          description: Se requiere de estar logeado
+          description: Se requiere estar logeado, el producto debe estar disponible y el metodo de pago existir
           content:
             application/json:
               schema:
                 type: object
-                example: {'message': Debes estar logeado, el producto debe estar disponible y el metodo de pago debe ser existente'}
+                example: {'message': El producto no esta disponible'}
       parameters:
         - in: path
           name: id
@@ -217,49 +226,39 @@ paths:
             type: integer
           required: true
           description: ingresar el  ID del usuario
+
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                name:
-                  type: string
-                  description: name
-                  example: thomas
-                username:
-                  type: string
-                  description: nombre de usuario
-                  example: 1thomas13
-                password:
-                  type: string
-                  description: constraseña
-                  example: 123asd
-                email:
-                  type: string
-                  description: Email del usuario
-                  example: thomas@gmail.com
-                numberPhone:
+                order:
+                  type: array
+                  description: Array de pedidos. Si quiere pedir mas de un producto diferente se le debe agregar otro objeto al array con sus 2 propiedades(productId y amount)
+                  items:
+                    type: object
+                    properties:
+                      productId:
+                        type: integer
+                        example: 1
+                      amount:
+                        type: integer
+                        example: 2
+                    
+                paymentMethodId:
                   type: integer
-                  description: numero de telefono
-                  example: 123456
-                address:
-                  type: string
-                  description: domicilio
-                  example: belgrano 123
-                isAdmin:
-                  type: boolean
-                  description: Usuario administrador(siempre con usuarios creados va a devolver falso)
-                  example: true
-                isLogged:
-                  type: boolean
-                  description: Muestra si el usuario esta logeado
-                  example: true
+                  example: 1
+                destinationAddress:
+                  type: array
+                  example: Mendoza 231
 
-  #confirmar pedidos
   /orders/confirm/{id}/{numOrder}:
     get:
-      description: Permite a los usuarios confirmar sus pedidos
+      tags:
+        - Pedidos/Orders
+      summary: Confirmar pedido
+      description: Permite a los clientes confirmar su pedido
       responses:
           "201":
             description: Pedido confirmado
@@ -274,7 +273,7 @@ paths:
               application/json:
                 schema:
                   type: object
-                  example: {'message': Debes estar logeado, y el numero de orden tiene que ser valido'}
+                  example: {'message': El numero de orden no le pertenece al usuario}
       parameters:
           - in: path
             name: id
@@ -290,9 +289,11 @@ paths:
             required: true
             description: ingresar el numero de orden a confirmar
   
-  #Modificar pedidos
   /orders/{id}/{numOrder}:
-    get:
+    put:
+      tags:
+        - Pedidos/Orders
+      summary: Modificar pedido
       description: Permite modificar el pedido siempre y cuando el mismo no este confirmado 
       responses:
           "201":
@@ -324,9 +325,37 @@ paths:
             required: true
             description: ingresar el numero de orden a confirmar
 
-#Mostrar historial de el usuario
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order:
+                  type: array
+                  description: Array de pedidos. Si quiere pedir mas de un producto diferente se le debe agregar otro objeto al array con sus 2 propiedades(productId y amount)
+                  items:
+                    type: object
+                    properties:
+                      productId:
+                        type: integer
+                        example: 1
+                      amount:
+                        type: integer
+                        example: 2
+                    
+                paymentMethodId:
+                  type: integer
+                  example: 1
+                destinationAddress:
+                  type: array
+                  example: Mendoza 231
+
   /orders/history/{id}:
     get:
+      tags:
+        - Pedidos/Orders
+      summary: Ver historial
       description: Permite a los usuarios ver su historial
       responses:
           "201":
@@ -346,10 +375,11 @@ paths:
             required: true
             description: ingresar el  ID del usuario
 
-#PRODUCTOS
-
   /products/{id}:
     get:
+      tags:
+        - Productos/Products 
+      summary: Ver todos los productos
       description: Permite a los administradores ver el menu de los productos existentes
       responses:
           "200":
@@ -371,7 +401,10 @@ paths:
         
   /products/add/{id}:
     post:
-      description: Permite a los administradores agregar productos
+      tags:
+        - Productos/Products 
+      summary: Agregar producto
+      description: Permite agregar productos. Requiere ser ADMIN
       responses:
           "200":
             description: Agrega un producto
@@ -416,6 +449,9 @@ paths:
 
   /products/{id}/{productid}:
     put:
+      tags:
+        - Productos/Products 
+      summary: Modificar producto
       description: Permite a los administradores modificar productos
       responses:
           "200":
@@ -426,12 +462,12 @@ paths:
                   type: object
                   example: {'message': Producto modificado!}
           "400":
-            description: Se requiere de estar logeado  y ser administrador
+            description: Se requiere de estar logeado, ser administrador y el producto debe existir
             content:
               application/json:
                 schema:
                   type: object
-                  example: {'message': No estas logeado'}
+                  example: {'message': El id del producto no existe'}
       parameters:
           - in: path
             name: id
@@ -467,6 +503,9 @@ paths:
 
   /products/delete/{id}/{productid}:
     delete:
+      tags:
+        - Productos/Products 
+      summary: Eliminar producto
       description: Permite a los administradores eliminar productos
       responses:
           "200":
@@ -477,12 +516,12 @@ paths:
                   type: object
                   example: {'message': Producto eliminado!}
           "400":
-            description: Se requiere de estar logeado  y ser administrador
+            description: Se requiere de estar logeado, ser administrador y el producto debe existir
             content:
               application/json:
                 schema:
                   type: object
-                  example: {'message': No estas logeado'}
+                  example: {'message': El id del producto no existe'}
       parameters:
           - in: path
             name: id
@@ -497,10 +536,11 @@ paths:
             required: true
             description: Ingresar el id del producto a modificar
 
-#Metodos de pago
-
   /payment/{id}:
     get:
+      tags:
+        - Metodo de pagos/Payment Methods 
+      summary: Ver metodos de pago
       description: Permite a los administradores ver los metodos de pago
       responses:
           "200":
@@ -522,6 +562,9 @@ paths:
         
   /payment/create/{id}:
     post:
+      tags:
+        - Metodo de pagos/Payment Methods 
+      summary: Crear metodo de pago
       description: Permite a los administradores crear metodos de pago
       responses:
           "200":
@@ -559,6 +602,9 @@ paths:
 
   /payment/{id}/{paymentMethod}:
     put:
+      tags:
+        - Metodo de pagos/Payment Methods 
+      summary: Editar metodo de pago
       description: Permite a los administradores editar metodos de pago
       responses:
           "200":
@@ -569,12 +615,12 @@ paths:
                   type: object
                   example: {'message': Metodo de pago creado!}
           "400":
-            description: error- Se requiere de estar logeado  y ser administrador
+            description: error Se requiere de estar logeado, ser administrador y el metodo de pago debe existir
             content:
               application/json:
                 schema:
                   type: object
-                  example: {'message': No estas logeado'}
+                  example: {'message': El metodo de pago seleccionado no existe'}
       parameters:
           - in: path
             name: id
@@ -602,10 +648,13 @@ paths:
                 id:
                   type: integer
                   description: Id del metodo de pago
-                  example: 20
+                  example: 1
 
   /payment/delete/{id}/{paymentMethod}:
     delete:
+      tags:
+        - Metodo de pagos/Payment Methods 
+      summary: Eliminar metodo de pago
       description: Permite a los administradores eliminar metodos de pago
       responses:
           "200":
@@ -616,12 +665,12 @@ paths:
                   type: object
                   example: {'message': Metodo de pago eliminado!}
           "400":
-            description: error- Se requiere de estar logeado  y ser administrador
+            description: error Se requiere de estar logeado, ser administrador y el metodo de pago debe existi
             content:
               application/json:
                 schema:
                   type: object
-                  example: {'message': No estas logeado'}
+                  example: {'message': No eres administrador'}
       parameters:
           - in: path
             name: id
