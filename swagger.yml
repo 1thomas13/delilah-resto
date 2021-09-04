@@ -55,11 +55,11 @@ paths:
                 name:
                   type: string
                   description: name
-                  example: thomas
+                  example: Juanma
                 username:
                   type: string
                   description: nombre de usuario
-                  example: 1thomas13
+                  example: Juan0107
                 password:
                   type: string
                   description: constraseña
@@ -67,7 +67,7 @@ paths:
                 email:
                   type: string
                   description: Email del usuario
-                  example: thomas@gmail.com
+                  example: juan@gmail.com
                 numberPhone:
                   type: integer
                   description: numero de telefono
@@ -108,15 +108,15 @@ paths:
                 username:
                   type: string
                   description: Nombre de usuario
-                  example: 1thomas13
+                  example: Juan0107
                 email:
                   type: string
                   description: email del usuario
-                  example: thomi@gmail.com
+                  example: juan@gmail.com
                 password:
                   type: string
                   description: Contraseña del usuario
-                  example: hola1235
+                  example: 123asd
 
 #orders
   #mostrar ordenes
@@ -180,6 +180,17 @@ paths:
           required: true
           description: ingresar el numero de orden
 
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: integer
+                  description: Se ingresa un numero de estado para modificar el pedido
+                  example: 1thomas13
+
   #Crear pedidos
   /orders/{id}:
     post:
@@ -206,6 +217,44 @@ paths:
             type: integer
           required: true
           description: ingresar el  ID del usuario
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: name
+                  example: thomas
+                username:
+                  type: string
+                  description: nombre de usuario
+                  example: 1thomas13
+                password:
+                  type: string
+                  description: constraseña
+                  example: 123asd
+                email:
+                  type: string
+                  description: Email del usuario
+                  example: thomas@gmail.com
+                numberPhone:
+                  type: integer
+                  description: numero de telefono
+                  example: 123456
+                address:
+                  type: string
+                  description: domicilio
+                  example: belgrano 123
+                isAdmin:
+                  type: boolean
+                  description: Usuario administrador(siempre con usuarios creados va a devolver falso)
+                  example: true
+                isLogged:
+                  type: boolean
+                  description: Muestra si el usuario esta logeado
+                  example: true
 
   #confirmar pedidos
   /orders/confirm/{id}/{numOrder}:
@@ -320,7 +369,7 @@ paths:
             required: true
             description: ingresar el  ID del usuario
         
-  /products/{id}:
+  /products/add/{id}:
     post:
       description: Permite a los administradores agregar productos
       responses:
@@ -345,6 +394,25 @@ paths:
               type: integer
             required: true
             description: ingresar el  ID del usuario
+      
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Nombre del producto
+                  example: Choripan
+                price:
+                  type: integer
+                  description: Precio del producto
+                  example: 500
+                available:
+                  type: boolean
+                  description: Se indica si el producto esta disponible
+                  example: true
 
   /products/{id}/{productid}:
     put:
@@ -372,13 +440,32 @@ paths:
             required: true
             description: ingresar el  ID del usuario
           - in: path
-            name: id
+            name: productid
             schema:
               type: integer
             required: true
             description: Ingresar el id del producto a modificar
-        
-   /products/{id}/{productid}:
+      
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Nombre del producto
+                  example: Choripan
+                price:
+                  type: integer
+                  description: Precio del producto
+                  example: 500
+                available:
+                  type: boolean
+                  description: Se indica si el producto esta disponible
+                  example: true
+
+  /products/delete/{id}/{productid}:
     delete:
       description: Permite a los administradores eliminar productos
       responses:
@@ -404,7 +491,7 @@ paths:
             required: true
             description: ingresar el  ID del usuario
           - in: path
-            name: id
+            name: productid
             schema:
               type: integer
             required: true
@@ -433,7 +520,7 @@ paths:
             required: true
             description: ingresar el  ID del Usuario
         
-  /payment/{id}:
+  /payment/create/{id}:
     post:
       description: Permite a los administradores crear metodos de pago
       responses:
@@ -458,8 +545,19 @@ paths:
               type: integer
             required: true
             description: ingresar el  ID del usuario
+      
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                method:
+                  type: string
+                  description: Nombre del metodo de pago
+                  example: Bitcoin
 
-  /payment/{id}/{:paymentMethod}:
+  /payment/{id}/{paymentMethod}:
     put:
       description: Permite a los administradores editar metodos de pago
       responses:
@@ -484,9 +582,30 @@ paths:
               type: integer
             required: true
             description: ingresar el  ID del usuario
+          - in: path
+            name: paymentMethod
+            schema:
+              type: integer
+            required: true
+            description: Ingresar el ID del metodo de pago
 
-  /payment/{id}/{:paymentMethod}:
-    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                method:
+                  type: string
+                  description: Nombre del metodo de pago
+                  example: MercadoPago
+                id:
+                  type: integer
+                  description: Id del metodo de pago
+                  example: 20
+
+  /payment/delete/{id}/{paymentMethod}:
+    delete:
       description: Permite a los administradores eliminar metodos de pago
       responses:
           "200":
@@ -510,3 +629,9 @@ paths:
               type: integer
             required: true
             description: ingresar el  ID del usuario
+          - in: path
+            name: paymentMethod
+            schema:
+              type: integer
+            required: true
+            description: Ingresar el ID del metodo de pago

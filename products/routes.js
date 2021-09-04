@@ -5,12 +5,12 @@ const products = require("./data")
 
 router.use(express.json())
 
-router.status(201).get("/:id", middle.isLogged, middle.isAdmin, (req, res) => {
-    res.json({ "products": products })
+router.get("/:id", middle.isLogged, middle.isAdmin, (req, res) => {
+    res.status(201).json({ "products": products })
 })
 
 let id = 3
-router.post("/:id", middle.isLogged, middle.isAdmin, (req, res) => {
+router.post("/add/:id", middle.isLogged, middle.isAdmin, (req, res) => {
 
     const {name,price,available} = req.body
 
@@ -38,7 +38,7 @@ router.put("/:id/:productid", middle.isLogged, middle.isAdmin,middle.delete_modi
     res.status(200).json({ message: "Producto modificado!" })
 })
 
-router.delete("/:id/:productid", middle.isLogged, middle.isAdmin, middle.delete_modifyProduct, (req, res) => {
+router.delete("/delete/:id/:productid", middle.isLogged, middle.isAdmin, middle.delete_modifyProduct, (req, res) => {
 
     products.splice(product, 1)
     res.status(200).json({ message: "Producto eliminado!" })

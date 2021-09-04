@@ -10,7 +10,7 @@ router.get("/:id",middle.isLogged,middle.isAdmin,(req,res) => {
 })
 
 let id=3
-router.post("/:id",middle.isLogged,middle.isAdmin,(req,res) => {
+router.post("/create/:id",middle.isLogged,middle.isAdmin,(req,res) => {
 
     const {method} = req.body
 
@@ -37,7 +37,7 @@ router.put("/:id/:paymentMethod",middle.isLogged,middle.isAdmin,middle.delete_mo
     
 })
 
-router.delete("/:id/:paymentMethod",middle.isLogged,middle.isAdmin,middle.delete_modifyMethod,(req,res) => {
+router.delete("/delete/:id/:paymentMethod",middle.isLogged,middle.isAdmin,middle.delete_modifyMethod,(req,res) => {
 
     paymentMethod.splice(index, 1)
     res.status(200).json({ message: "Metodo de pago eliminado!" })
