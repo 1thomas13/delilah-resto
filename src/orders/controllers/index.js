@@ -1,22 +1,15 @@
-const express = require("express")
-const router = express.Router()
-const products = require("../products/data.js")
-const paymentMethod = require("../paymentMethod/data")
-
-const data = require("./data.js")
-const middle = require("./middlewares.js")
+const products = require("../../products/data")
+const paymentMethod = require("../../paymentMethod/data")
+const middle = require("../middlewares.js")
+const data = require("../data.js")
 
 const orders = data.orders
 
-router.use(express.json())
-
-//mostrar pedidos
-router.get("/allOrders/:id",middle.isLogged,middle.isAdmin,(req, res) => {
+exports.allOrders = (req, res) => {
     res.json({orders: orders })
-})
+}
 
-//cambiar el estado
-router.put("/status/:id/:numOrder",middle.isLogged,middle.isAdmin,middle.statusValidate,(req, res) => {
+exports.modifyStatusOrder = (req, res) => {
 
     findOrder = orders.findIndex(orders => orders.numOrder == req.params.numOrder)
 
@@ -28,11 +21,11 @@ router.put("/status/:id/:numOrder",middle.isLogged,middle.isAdmin,middle.statusV
         res.status(201).json({message:`Cambio de estado realizado con exito. El estado de la orden ${req.params.numOrder} es ${data.status[req.body.status]}`})
     }
    
-})
+}
 
-//hacer pedido
 let numOrder = 1
-router.post("/:id", middle.isLogged, middle.validateOrder, (req, res) => {
+
+exports.createOrder = (req, res) => {
 
     const date = new Date
     const time = `${date.getHours()}:${date.getMinutes()}`
@@ -56,20 +49,16 @@ router.post("/:id", middle.isLogged, middle.validateOrder, (req, res) => {
 
     orders.push(newOrder)
     res.status(201).json({ message: `El total es de ${total} y el pago seleccionado es ${selectedPayment.method}. Debe confirmar el pedido para continuar`})
-})
+}
 
-//Confirmar pedido
-    
-router.get("/confirm/:id/:numOrder",middle.isLogged,middle.confirmOrder,(req, res) => {
+exports.confirmOrder = (req, res) => {
 
     orders[findOrder].status = 1
     res.status(201).json({message:`Se confirmo el pedido`})
     
-})
+}
 
-// modificar pedido
-    
-router.put("/:id/:numOrder",middle.isLogged,middle.modifyOrder,middle.validateOrder,(req, res) => {
+exports.modifyOrder = (req, res) => {
 
     const {order,paymentMethodId,destinationAddress} = req.body
     
@@ -78,12 +67,9 @@ router.put("/:id/:numOrder",middle.isLogged,middle.modifyOrder,middle.validateOr
     orders[findOrder].destinationAddress = destinationAddress
 
     res.status(201).json({message:`Pedido modificado`})
-    
-})
+}
 
-
-// mostrar historial
-router.get("/history/:id", middle.isLogged, (req, res) => {
+exports.getHistory = (req, res) => {
 
     let history = orders.filter((orders) => orders.userId == req.params.id)
 
@@ -93,6 +79,4 @@ router.get("/history/:id", middle.isLogged, (req, res) => {
     }
 
     res.status(200).json(history)
-})
-
-module.exports = router
+}

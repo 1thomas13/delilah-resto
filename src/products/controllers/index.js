@@ -1,16 +1,12 @@
-const express = require("express")
-const router = express.Router()
-const middle = require("./middlewares")
-const products = require("./data")
+const products = require("../data")
+const { delete_modifyProduct } = require("../middlewares")
 
-router.use(express.json())
-
-router.get("/:id", middle.isLogged, middle.isAdmin, (req, res) => {
+exports.allProducts = (req, res) => {
     res.status(201).json({ "products": products })
-})
+}
 
 let id = 3
-router.post("/add/:id", middle.isLogged, middle.isAdmin, (req, res) => {
+exports.createProduct = (req, res) => {
 
     const {name,price,available} = req.body
 
@@ -24,9 +20,9 @@ router.post("/add/:id", middle.isLogged, middle.isAdmin, (req, res) => {
     products.push(newProduct)
 
     res.status(201).json({ message: "Producto agregado!" })
-})
+}
 
-router.put("/:id/:productid", middle.isLogged, middle.isAdmin,middle.delete_modifyProduct,(req, res) => {
+exports.modifyProduct=(req, res) => {
 
     const {name,price,available} = req.body
 
@@ -36,12 +32,10 @@ router.put("/:id/:productid", middle.isLogged, middle.isAdmin,middle.delete_modi
 
 
     res.status(200).json({ message: "Producto modificado!" })
-})
+}
 
-router.delete("/delete/:id/:productid", middle.isLogged, middle.isAdmin, middle.delete_modifyProduct, (req, res) => {
+exports.deleteProduct = (req, res) => {
 
     products.splice(product, 1)
     res.status(200).json({ message: "Producto eliminado!" })
-})
-
-module.exports = router
+}

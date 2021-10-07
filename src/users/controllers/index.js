@@ -1,22 +1,13 @@
-const express = require("express")
-const router = express.Router()
 
-const users = require("./data.js")
-const middle = require("./middlewares")
+const users = require("../data")
 
-router.use(express.json())
-
-//mostrar usuarios
-router.get("/:id",middle.isLogged,middle.isAdmin,(req,res) => {
+exports.allUsers = (req,res) =>{
     res.json({"users": users})
-})
-
+}
 let id = 1
-//registro
-router.post("/",middle.emailValidate,(req,res) => {
-   
-    const {name,username,password,email,numberPhone,address} = req.body
 
+exports.register = (req,res) => {
+    const {name,username,password,email,numberPhone,address} = req.body
     const newUser = {
         id:id++,
         name:name,
@@ -32,16 +23,10 @@ router.post("/",middle.emailValidate,(req,res) => {
     users.push(newUser)
     res.status(201).json({message:"Usuario creado correctamente"})
     
-})
+}
 
-//login
-
-router.post("/login",middle.validateLogin,(req,res) => {
+exports.login = (req,res) => {
 
     findUser.isLogged = true
     res.status(200).json({message:`Sesion iniciada. Bienvenido ${findUser.username}`})
-    
-})
-
-
-module.exports = router
+}
