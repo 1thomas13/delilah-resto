@@ -21,10 +21,10 @@ exports.createPaymentsMethod = (req,res) => {
 
 exports.modifyPaymentsMethod = (req,res) => {
 
-    const {id,method} = req.body
+    const {method} = req.body
 
     const payment = {
-        id:id,
+        id:req.params.paymentMethod,
         method:method
     }
 

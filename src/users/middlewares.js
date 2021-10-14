@@ -1,8 +1,10 @@
-const express = require("express")
-const users = require("./data.js")
+const models = require("../models") 
 
-const isLogged = ((req,res,next) => {
-    findUser = users.find(users => users.id == req.params.id)
+const isLogged = (async (req,res,next) => {
+
+    const findUser = await models.User.findOne({
+        where:{id: req.params.id}
+    })
 
     if(findUser == undefined){
         return res.status(400).json({message:"El usuario no existe"})
@@ -17,10 +19,13 @@ const isLogged = ((req,res,next) => {
     
 })
 
-const isAdmin = ((req,res,next) => {
-    admin = users.find(users => users.id == req.params.id && users.isAdmin == true)
+const isAdmin = (async(req,res,next) => {
 
-    if(admin == undefined) {
+    const findUser = await models.User.findOne({
+        where:{isAdmin: true}
+    })
+
+    if(findUser == undefined) {
         res.status(400).json({message:"Debes ser administrador para acceder"}) 
         return
     }
@@ -28,25 +33,22 @@ const isAdmin = ((req,res,next) => {
     next()
 })
 
-const emailValidate = (req,res,next) => {
+const emailValidate = (async(req,res,next) => {
      
-    find = users.find(users => users.email == req.body.email)
-
-    if(find == undefined) next()
-
-    else res.status(400).json({message:"Ya existe una cuenta con ese email. Intente con otro"})
-    
-}
-
-const validateLogin = (req,res,next) => {
-
-    findUser = users.find(users => users.username == req.body.username && users.password == req.body.password || users.email == req.body.email && users.password == req.body.password)
+    try {
+        const findUser = await models.User.findOne({where:{email: req.body.email} })
         
-    if(findUser) next() 
-    
-    else{
-        res.json("El usuario y la contraseña no coinciden")
-        return
+        if(findUser == undefined) next()
+
+        else res.status(400).json({message:"Ya existe una cuenta con ese email. Intente con otro"})
+
+    } catch (error) {
+        res.status(400).json({message:"Todos los campos son obligatorios"})
     }
-}
-module.exports = {emailValidate, validateLogin,isLogged,isAdmin}
+   
+
+    
+    
+})
+
+module.exports = {emailValidate,isLogged, isAdmin}

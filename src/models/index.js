@@ -9,7 +9,7 @@ User.init({
     password: {type: Sequelize.STRING,allowNull: false},
     email: {type: Sequelize.STRING,allowNull: false},
     numberPhone: {type: Sequelize.INTEGER,allowNull: false},
-    address: {type: Sequelize.STRING,allowNull: false},
+    address_id: {type: Sequelize.INTEGER,allowNull: false},
     isAdmin: {type: Sequelize.BOOLEAN,allowNull: false},
     isLogged: {type: Sequelize.BOOLEAN,allowNull: false},
 
@@ -71,8 +71,23 @@ OrderStatus.init({
 },{sequelize,modelName: "OrderStatus"})
 
 
+User.hasMany(OrderDetails, {foreignKey: "user_id"})
+
+User.hasMany(Address, {foreignKey: "user_id"})
+
+OrderStatus.hasMany(OrderDetails, {foreignKey: "status_id"})
+
+Address.hasMany(OrderDetails, {foreignKey: "address_id"})
+
+PaymentMethod.hasMany(OrderDetails, {foreignKey: "paymentMethod_id"})
+
+OrderDetails.hasMany(Order, {foreignKey: "orderDetails_id"})
+
+Products.hasMany(Order, {foreignKey: "product_id"})
 
 ;(async() => {
-    await sequelize.sync()
+    await sequelize.sync({ force: true })
     console.log("All models were synchronized successfully.")
 })()
+
+module.exports = {User,Address,Products,OrderDetails,Order,PaymentMethod,OrderStatus}

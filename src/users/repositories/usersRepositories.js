@@ -1,0 +1,49 @@
+const models = require("../../models") 
+const { Op } = require("sequelize");
+
+exports.getAll = () => {
+    return models.User.findAll()
+}
+
+exports.save = async(newUser) => {
+    
+    return await models.User.create(newUser)
+    
+}
+
+exports.login = (user) =>{
+    
+    const findUser = models.User.findOne({
+        where:{
+            [Op.or]:[
+                {
+                    email:user.email,
+                    password:user.password
+                },
+                {
+                    username:user.username,
+                    password:user.password
+                }
+            ]
+        }
+    }) 
+    
+    return findUser
+}
+
+exports.UpdateLogin = (user) => {
+    const update = models.User.update({isLogged: true},{
+        where:{
+            [Op.or]:[
+                {
+                    email:user.email,
+                    password:user.password
+                },
+                {
+                    username:user.username,
+                    password:user.password
+                }
+            ]
+        }
+    })
+}
