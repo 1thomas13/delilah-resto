@@ -6,9 +6,7 @@ exports.getAll = () => {
 }
 
 exports.save = async(newUser) => {
-    
     return await models.User.create(newUser)
-    
 }
 
 exports.login = (user) =>{
@@ -32,7 +30,7 @@ exports.login = (user) =>{
 }
 
 exports.UpdateLogin = (user) => {
-    const update = models.User.update({isLogged: true},{
+    models.User.update({isLogged: true},{
         where:{
             [Op.or]:[
                 {

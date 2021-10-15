@@ -12,6 +12,7 @@ User.init({
     address_id: {type: Sequelize.INTEGER,allowNull: false},
     isAdmin: {type: Sequelize.BOOLEAN,allowNull: false},
     isLogged: {type: Sequelize.BOOLEAN,allowNull: false},
+    isSuspended: {type: Sequelize.BOOLEAN,allowNull: false},
 
 },{sequelize,modelName: "User"})
 

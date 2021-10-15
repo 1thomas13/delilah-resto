@@ -1,40 +1,38 @@
-const paymentMethod = require("../data")
+const repositories = require("../repositories/methodRepositories")
 
-exports.allPaymentsMethod = (req,res) => {
-    res.status(200).json(paymentMethod)
+exports.allPaymentsMethod = async(req,res) => {
+
+    paymentMethods = await repositories.getAllPaymentsMethod()
+
+    res.status(200).json(paymentMethods)
 }
 
 let id=3
 
-exports.createPaymentsMethod = (req,res) => {
+exports.createPaymentsMethod =  async(req,res) => {
 
     const {method} = req.body
 
-    const payment = {
-        id:id++,
-        method:method
-    }
+    if(!method){res.status(400).json({message:"Debe ingresar el nuevo metodo de pago"})}
 
-    paymentMethod.push(payment)
-    res.status(201).json({message:"Metodo de pago creado"})
+    await repositories.addPaymentMethod(method)
+    res.status(201).json({message:"Metodo de pago creado!"})
 }
 
-exports.modifyPaymentsMethod = (req,res) => {
+exports.modifyPaymentsMethod =  async(req,res) => {
 
+    const methodId = req.params.paymentMethodid
     const {method} = req.body
 
-    const payment = {
-        id:req.params.paymentMethod,
-        method:method
-    }
-
-    paymentMethod[index] = payment
+    await repositories.updatePaymentMethod(methodId, method) 
     res.status(201).json({message:"Metodo de pago modificado"})
     
 }
 
-exports.deletePaymentMethod = (req,res) => {
+exports.deletePaymentMethod =  async(req,res) => {
+    const methodId = req.params.paymentMethodid
+    
+    await repositories.deletePaymentMethod(methodId)
 
-    paymentMethod.splice(index, 1)
     res.status(200).json({ message: "Metodo de pago eliminado!" })
 }

@@ -1,9 +1,12 @@
-const express = require("express")
-const users = require("../users/data.js")
-const paymentMethod = require("./data.js")
+const models = require("../models")
+const paymentMethod = require("./data")
 
-const isLogged = ((req,res,next) => {
-    findUser = users.find(users => users.id == req.params.id)
+const isLogged = (async(req,res,next) => {
+    findUser = await models.User.findOne({
+        where: {
+            id:req.params.id
+        }
+    })
 
     if(findUser == undefined) return res.status(400).json({message:"El usuario no existe"})
 
@@ -16,10 +19,15 @@ const isLogged = ((req,res,next) => {
     
 })
 
-const isAdmin = ((req,res,next) => {
-    admin = users.find(users => users.id == req.params.id && users.isAdmin == true)
+const isAdmin = (async(req,res,next) => {
+    findUser = await models.User.findOne({
+        where:{
+            id:req.params.id,
+            isAdmin:true
+        }
+    })
 
-    if(admin == undefined) {
+    if(findUser == undefined) {
         res.status(403).json({message:"Debes ser administrador para acceder"}) 
         return
     }
@@ -27,11 +35,15 @@ const isAdmin = ((req,res,next) => {
     next()
 })
 
-const delete_modifyMethod = ((req,res,next) => {
+const delete_modifyMethod = (async(req,res,next) => {
 
-    index = paymentMethod.findIndex (paymentMethod => paymentMethod.id == req.params.paymentMethod)
+    const paymentMethod = await models.PaymentMethod.findOne ({
+        where:{
+            id:req.params.paymentMethodid
+        }
+    })
 
-    if(index == -1){
+    if(paymentMethod == undefined){
         res.status(400).json({message:"El id ingresado no pertenece a un metodo de pago"})
         return
     }

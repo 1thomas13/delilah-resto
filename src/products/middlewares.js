@@ -1,11 +1,13 @@
-const express = require("express")
 const users = require("../users/data.js")
 const products = require("../products/data.js")
-const orders = require("./data")
+const models = require("../models")
 
-
-const isLogged = ((req,res,next) => {
-    findUser = users.find(users => users.id == req.params.id)
+const isLogged = (async(req,res,next) => {
+    findUser = await models.User.findOne({
+        where:{
+            id:req.params.id
+        }
+    })
 
     if(findUser == undefined){
         return res.status(400).json({message:"El usuario no existe"})
@@ -20,10 +22,14 @@ const isLogged = ((req,res,next) => {
     
 })
 
-const isAdmin = ((req,res,next) => {
-    admin = users.find(users => users.id == req.params.id && users.isAdmin == true)
+const isAdmin = (async(req,res,next) => {
+    findUser = await models.User.findOne({
+        where:{
+            id:req.params.id,
+        }
+    })
 
-    if(admin == undefined) {
+    if(findUser.isAdmin == false) {
         res.status(403).json({message:"Debes ser administrador para acceder"}) 
         return
     }
@@ -31,15 +37,19 @@ const isAdmin = ((req,res,next) => {
     next()
 })
 
-const delete_modifyProduct = ((req,res,next) => {
+const delete_modifyProduct = async(req,res,next) => {
+    
+    const product = await models.Products.findOne({
+        where:{
+            id:req.params.productid
+        }
+    })
 
-    product = products.findIndex (products => products.id == req.params.productid)
-
-    if(product == -1){
+    if(product == undefined){
         res.status(400).json({message:"El id ingresado no pertenece a un producto"})
         return
     }
     next()
-})
+}
 
 module.exports = {isLogged,isAdmin,delete_modifyProduct}

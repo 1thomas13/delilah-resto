@@ -7,7 +7,7 @@ const {allProducts,createProduct, modifyProduct,deleteProduct} = require("../con
 
 router.use(express.json())
 
-router.get("/:id", middle.isLogged, middle.isAdmin, allProducts)
+router.get("/:id", middle.isLogged, allProducts)
 
 router.post("/add/:id", middle.isLogged, middle.isAdmin, createProduct)
 

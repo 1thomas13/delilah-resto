@@ -1,5 +1,3 @@
-
-const users = require("../data")
 const repositories = require("../repositories/usersRepositories")
 
 exports.allUsers = async(req,res) =>{
@@ -23,7 +21,8 @@ exports.register = async (req,res) => {
         numberPhone: numberPhone,
         address_id: 1,
         isAdmin: true,
-        isLogged: false
+        isLogged: false,
+        isSuspended:false
     }
     
     
@@ -43,10 +42,15 @@ exports.login = async (req,res) => {
         password:password
     }
     
-        findUser = await repositories.login(user)
-        console.log(findUser)
-        repositories.UpdateLogin(user)
-        res.status(200).json({message:`Sesion iniciada. Bienvenido ${findUser.username}`})
+    
+    const login = await repositories.login(user)
+
+    if(login == null){
+         res.status(400).json({message: "Creedenciales incorrectas"})
+    }
+    
+    repositories.UpdateLogin(user)
+    res.status(200).json({message:`Sesion iniciada. Bienvenido ${user.username}`})
 
 }
     
