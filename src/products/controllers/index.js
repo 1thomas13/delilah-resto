@@ -1,4 +1,3 @@
-const products = require("../data")
 const repositories = require("../repositories/productsRepositories")
 
 exports.allProducts = async(req, res) => {
@@ -31,7 +30,7 @@ exports.modifyProduct=(req, res) => {
     const {name,price,available} = req.body
 
     if(name == undefined || price == undefined|| available == undefined){
-        res.status(400).json({message:"Falta ingresar datos para crear un producto"})
+        res.status(400).json({message:"Falta ingresar modificar un crear producto"})
     }
 
     const modifiedProduct = {

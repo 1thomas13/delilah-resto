@@ -1,15 +1,15 @@
 const models = require("../../models")
 
 exports.getAll = () => {
-    return models.Products.findAll()
+    return models.Product.findAll()
 }
 
 exports.addProduct = (product) => {
-    return models.Products.create(product)
+    return models.Product.create(product)
 }
 
 exports.deleteProduct = (productid) =>{
-    return models.Products.destroy({
+    return models.Product.destroy({
         where:{
             id:productid
         }
@@ -18,7 +18,10 @@ exports.deleteProduct = (productid) =>{
  
 exports.modifyProduct = (productid, {modifiedProduct}) =>{
 
-    return models.Products.update({name:modifiedProduct.name,price:modifiedProduct.price,available:modifiedProduct.available},{
+    return models.Product.update({
+        name:modifiedProduct.name,price:modifiedProduct.price,available:modifiedProduct.available
+    },
+    {
         where:{
             id:productid
         }

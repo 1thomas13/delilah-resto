@@ -30,7 +30,7 @@ exports.login = (user) =>{
 }
 
 exports.UpdateLogin = (user) => {
-    models.User.update({isLogged: true},{
+    return models.User.update({isLogged: true},{
         where:{
             [Op.or]:[
                 {
@@ -42,6 +42,14 @@ exports.UpdateLogin = (user) => {
                     password:user.password
                 }
             ]
+        }
+    })
+}
+
+exports.suspendUser = (suspendedUserId) => {
+    return models.User.update({isSuspended: true},{
+        where:{
+            id:suspendedUserId
         }
     })
 }

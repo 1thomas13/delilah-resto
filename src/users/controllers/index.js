@@ -1,15 +1,15 @@
 const repositories = require("../repositories/usersRepositories")
 
-exports.allUsers = async(req,res) =>{
+exports.allUsers = async (req,res) =>{
 
     const users = await repositories.getAll()
-    res.json(users)
+    res.status(200).json(users)
 }
 
 exports.register = async (req,res) => {
-    const {name,username,password,email,numberPhone,address} = req.body
+    const {name,username,password,email,numberPhone} = req.body
 
-    if(!name || !username || !password || !email || !numberPhone || !address){
+    if(!name || !username || !password || !email || !numberPhone){
         res.status(400).json({message:"Todos los campos son obligatorios"})
     }
 
@@ -49,9 +49,25 @@ exports.login = async (req,res) => {
          res.status(400).json({message: "Creedenciales incorrectas"})
     }
     
+    if(login.isLogged == true){
+        res.status(400).json({message: "Ya esta iniciada la secion sesion"})
+   }
+   
     repositories.UpdateLogin(user)
     res.status(200).json({message:`Sesion iniciada. Bienvenido ${user.username}`})
 
 }
     
+exports.suspendUser = async(req,res) => {
+
+    const suspendedUserId = req.params.suspendedUserId
+
+    const suspend = await repositories.suspendUser(suspendedUserId)
+
+    if(suspend == 0){
+        res.status(400).json({message:`El id del usuario a suspender no pertenece a un usuario`})
+    }
+
+    res.status(200).json({message:`Usuario con el id ${suspendedUserId} suspendido`})
+}
     

@@ -6,55 +6,47 @@ class User extends Model{}
 User.init({
     name: {type: Sequelize.STRING,allowNull: false},
     username: {type: Sequelize.STRING,allowNull: false},
-    password: {type: Sequelize.STRING,allowNull: false},
+    password: {type: Sequelize.STRING,allowNull: false,},
     email: {type: Sequelize.STRING,allowNull: false},
     numberPhone: {type: Sequelize.INTEGER,allowNull: false},
-    address_id: {type: Sequelize.INTEGER,allowNull: false},
     isAdmin: {type: Sequelize.BOOLEAN,allowNull: false},
     isLogged: {type: Sequelize.BOOLEAN,allowNull: false},
     isSuspended: {type: Sequelize.BOOLEAN,allowNull: false},
 
-},{sequelize,modelName: "User"})
+},{sequelize,timestamps: false,modelName: "User"})
 
 
 class Address extends Model{}
 
 Address.init({
     destination: {type: Sequelize.STRING,allowNull: false},
-    user_id: {type: Sequelize.INTEGER,allowNull: false},
 
-},{sequelize,modelName: "Address"})
+},{sequelize,timestamps: false,modelName: "Address"})
 
-class Products extends Model{}
+class Product extends Model{}
 
-Products.init({
+Product.init({
     name: {type: Sequelize.STRING,allowNull: false},
     price: {type: Sequelize.INTEGER,allowNull: false},
     available: {type: Sequelize.BOOLEAN,allowNull: false},
 
-},{sequelize,modelName: "Products"})
-
-class OrderDetails extends Model{}
-
-OrderDetails.init({
-    user_id: {type: Sequelize.INTEGER,allowNull: false},
-    time: {type: Sequelize.STRING,allowNull: false},
-    status_id: {type: Sequelize.INTEGER,allowNull: false},
-    address_id: {type: Sequelize.INTEGER,allowNull: false},
-    paymentMethod_id: {type: Sequelize.INTEGER,allowNull: false},
-    total: {type: Sequelize.INTEGER,allowNull: false},
-
-},{sequelize,modelName: "OrderDetails"})
+},{sequelize,timestamps: false,modelName: "Products"})
 
 class Order extends Model{}
 
 Order.init({
-    product_id: {type: Sequelize.INTEGER,allowNull: false},
-    orderDetails_id: {type: Sequelize.INTEGER,allowNull: false},
+    time: {type: Sequelize.STRING,allowNull: false},
+    total: {type: Sequelize.INTEGER,allowNull: false},
+
+},{sequelize,modelName: "Order"})
+
+class OrderDetail extends Model{}
+
+OrderDetail.init({
     amount: {type: Sequelize.INTEGER,allowNull: false},
     price: {type: Sequelize.INTEGER,allowNull: false},
 
-},{sequelize,modelName: "Order"})
+},{sequelize,modelName: "OrderDetail"})
 
 
 class PaymentMethod extends Model{}
@@ -62,33 +54,38 @@ class PaymentMethod extends Model{}
 PaymentMethod.init({
     method: {type: Sequelize.STRING,allowNull: false},
 
-},{sequelize,modelName: "PaymentMethod"})
+},{sequelize,timestamps: false,modelName: "PaymentMethod"})
 
 class OrderStatus extends Model{}
 
 OrderStatus.init({
     status: {type: Sequelize.STRING,allowNull: false},
 
-},{sequelize,modelName: "OrderStatus"})
+},{sequelize,timestamps: false,modelName: "OrderStatus"})
 
 
-User.hasMany(OrderDetails, {foreignKey: "user_id"})
+User.hasMany(Order, {foreignKey: "userId"})
 
-User.hasMany(Address, {foreignKey: "user_id"})
+User.hasMany(Address, {foreignKey: "userId"})
 
-OrderStatus.hasMany(OrderDetails, {foreignKey: "status_id"})
+OrderStatus.hasMany(Order, {foreignKey: "statusId"})
 
-Address.hasMany(OrderDetails, {foreignKey: "address_id"})
+Address.hasMany(Order, {foreignKey: "addressId"})
 
-PaymentMethod.hasMany(OrderDetails, {foreignKey: "paymentMethod_id"})
+PaymentMethod.hasMany(Order, {foreignKey: "paymentMethodId"})
 
-OrderDetails.hasMany(Order, {foreignKey: "orderDetails_id"})
+OrderDetail.hasMany(Order, {foreignKey: "orderId"})
 
-Products.hasMany(Order, {foreignKey: "product_id"})
+Product.hasMany(OrderDetail, {foreignKey: "productId"})
 
 ;(async() => {
     await sequelize.sync({ force: true })
     console.log("All models were synchronized successfully.")
+
+    await OrderStatus.create({
+        status: "new"
+    })
+
 })()
 
-module.exports = {User,Address,Products,OrderDetails,Order,PaymentMethod,OrderStatus}
+module.exports = {User,Address,Product,OrderDetail,Order,PaymentMethod,OrderStatus}

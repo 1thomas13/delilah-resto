@@ -1,7 +1,6 @@
 const express = require("express")
 const router = express.Router()
 const middle = require("../middlewares")
-const products = require("../data")
 
 const {allProducts,createProduct, modifyProduct,deleteProduct} = require("../controllers")
 

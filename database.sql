@@ -12,10 +12,3 @@ CREATE TABLE orders(id INT AUTO_INCREMENT PRIMARY KEY,user_id INT (255),paymentm
 CREATE TABLE order_product(id INT AUTO_INCREMENT PRIMARY KEY,product_id INT(100),order_id INT(255));
 
 CREATE TABLE status(id INT AUTO_INCREMENT PRIMARY KEY,status VARCHAR (100));
-
-SELECT * FROM bandasmusicales;
-SELECT pais FROM bandasmusicales WHERE pais = "argentina";
-SELECT * FROM bandasmusicales WHERE integrantes = 1;
-SELECT * FROM canciones WHERE year(fecha_publicacion) > 2015;
-SELECT * FROM canciones WHERE duracion > 180;
-SELECT * FROM albumes;

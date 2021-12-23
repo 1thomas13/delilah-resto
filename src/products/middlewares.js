@@ -1,5 +1,3 @@
-const users = require("../users/data.js")
-const products = require("../products/data.js")
 const models = require("../models")
 
 const isLogged = (async(req,res,next) => {
@@ -39,7 +37,7 @@ const isAdmin = (async(req,res,next) => {
 
 const delete_modifyProduct = async(req,res,next) => {
     
-    const product = await models.Products.findOne({
+    const product = await models.Product.findOne({
         where:{
             id:req.params.productid
         }

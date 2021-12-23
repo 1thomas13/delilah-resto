@@ -1,5 +1,4 @@
 const models = require("../models")
-const paymentMethod = require("./data")
 
 const isLogged = (async(req,res,next) => {
     findUser = await models.User.findOne({
