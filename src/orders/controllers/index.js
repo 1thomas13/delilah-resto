@@ -7,85 +7,98 @@ exports.allOrders = async (req, res) => {
   res.status(200).json({ orders: orders })
 }
 
-// exports.modifyStatusOrder = (req, res) => {
+exports.getHistory = async (req, res) => {
 
-//     findOrder = orders.findIndex(orders => orders.numOrder == req.params.numOrder)
-
-//     if(findOrder == -1){
-//         res.status(404).json({message:"No hay una orden con ese numero. Intente con otro"})
-//     }
-//     else{
-//         orders[findOrder].status = req.body.status
-//         res.status(201).json({message:`Cambio de estado realizado con exito. El estado de la orden ${req.params.numOrder} es ${data.status[req.body.status]}`})
-//     }
-
-// }
-
-// let numOrder = 1
+    const history = await repositories.history(req.data.id)
+  
+    res.status(200).json({ orders: history })
+}
 
 exports.createOrder = async (req, res) => {
 
+  const { order, paymentMethodId, addressId } = req.body
+
   const date = new Date()
   const time = `${date.getHours()}:${date.getMinutes()}`
-
-  const { order, paymentMethodId, addressId } = req.body
 
   if (!order || !paymentMethodId || !addressId) {
     res.status(403).json({ message: 'Faltan ingresar datos para hacer un pedido' })
   }
  
 
-  const pro = await repositories.calculateTotal(order)
+  const total = await repositories.calculateTotal(order)
 
   const newOrder ={
     time: time,
-    id:req.data.id,
-    status: 1,
+    userId:req.data.id,
+    statusId: 1,
     paymentMethodId:paymentMethodId,
-    address:addressId,
+    addressId:addressId,
+    total:total
   }
+ 
+    const orderCreated = await repositories.createOrder(newOrder)
 
-//   newOrder = await this.createOrder(newOrder)
-//     order.forEach((o) => {
-
-//         let orderDetail = {
-//             amount: o.amount,
-//             productId: o.productId,
-//         }
-
-//         console.log(orderDetail)
-//   })
-
-  res.status(201).json({ message:pro })
+    await repositories.createOrdersDetails(order,orderCreated.id)
+ 
+  res.status(201).json({ message:"Orden creada!!" })
   
 }
 
-// exports.confirmOrder = (req, res) => {
+exports.modifyOrder = async (req,res) => {
 
-//     orders[findOrder].status = 1
-//     res.status(201).json({message:`Se confirmo el pedido`})
+    const orderId = req.params.idOrder
 
-// }
+    const { order, paymentMethodId, addressId } = req.body
 
-// exports.modifyOrder = (req, res) => {
+    const date = new Date()
+     const time = `${date.getHours()}:${date.getMinutes()}`
 
-//     const {order,paymentMethodId,destinationAddress} = req.body
+    if (!order || !paymentMethodId || !addressId) {
+        res.status(403).json({ message: 'Faltan ingresar datos para hacer un pedido' })
+    }
+     
+    const total = await repositories.calculateTotal(order)
+    
+    const update ={
+        time: time,
+        userId:req.data.id,
+        statusId: 1,
+        paymentMethodId:paymentMethodId,
+        addressId:addressId,
+        total:total
+    }
 
-//     orders[findOrder].order = order
-//     orders[findOrder].paymentMethodId = paymentMethodId
-//     orders[findOrder].destinationAddress = destinationAddress
+    const updateOrder = await repositories.createOrder(update,orderId)
 
-//     res.status(201).json({message:`Pedido modificado`})
-// }
+    res.status(201).json({message:"Orden modificada correctamente", orden: updateOrder})
+}
 
-// exports.getHistory = (req, res) => {
 
-//     let history = orders.filter((orders) => orders.userId == req.params.id)
+exports.confirmOrder = async(req, res) => {
 
-//     if (history.length == 0) {
-//         res.status(400).json({ message: "No hiciste ningun pedido" })
-//         return
-//     }
+    const orderId = req.params.idOrder
 
-//     res.status(200).json(history)
-// }
+    const statusConfirmed = 2
+
+    await  repositories.confirmOrder(orderId, req.data.id, statusConfirmed)
+
+    res.status(201).json({message:`Se confirmo el pedido`})
+
+}
+
+exports.modifyStatusOrder = async(req, res) => {
+
+    const {statusId} = req.body
+    const orderId = req.params.idOrder
+
+    if(!statusId || statusId>6 || statusId<1) {
+        res.status(400).json({error:"Debe ingresar un statusId valido para modificar su estado"})
+    }
+
+    await  repositories.modifyStatus(orderId, statusId)
+
+
+    res.status(201).json({message: "Estado del pedido modificado"})
+    
+}

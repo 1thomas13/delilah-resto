@@ -33,8 +33,21 @@ const isAdmin = async (req, res, next) => {
   
     next()
   }
+
+const delete_modifyProduct = async (req, res, next) => {
+  const product = await models.Product.findOne({
+    where: {
+      id: req.params.productid
+    }
+  })
   
-  
+  if (product == undefined) {
+    res.status(400).json({ message: 'El id ingresado no pertenece a un producto' })
+    return
+  }
+  next()
+}
+  // VALIDAR QUE LA DIRECCION EXTISTA METODO DE PAGO Y ESTADO Y EL PRODUCTO y que el id del pedido pertenesca al usuario
   
 
 // const validateOrder = ((req,res,next) => {
@@ -63,17 +76,6 @@ const isAdmin = async (req, res, next) => {
 
 //     next()
 
-// })
-
-// const isAdmin = ((req,res,next) => {
-//     admin = users.find(users => users.id == req.params.id && users.isAdmin == true)
-
-//     if(admin == undefined) {
-//         res.status(403).json({message:"Debes ser administrador para acceder"})
-//         return
-//     }
-
-//     next()
 // })
 
 // const statusValidate = ((req,res,next) => {
@@ -118,19 +120,5 @@ const isAdmin = async (req, res, next) => {
 
 //     next()
 // })
-
-// const calculateTotal = (req) => {
-//     let total = 0
-//      req.body.order.forEach((orders,i) => {
-
-//          productsIndex = products.findIndex(products => products.id == req.body.order[i].productId)
-
-//          total = total + products[productsIndex].price * req.body.order[i].amount
-//      })
-
-//      return total
-//  }
-
-// module.exports = {isLogged,validateOrder,isAdmin,statusValidate,confirmOrder,modifyOrder,calculateTotal}
 
 module.exports = {isAdmin,isAuthenticated}
