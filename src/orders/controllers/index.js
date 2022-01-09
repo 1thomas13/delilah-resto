@@ -1,13 +1,11 @@
-// const products = require("../../products/data")
-// const paymentMethod = require("../../paymentMethod/data")
-// const middle = require("../middlewares.js")
-// const data = require("../data.js")
+const repositories = require('../repositories/ordersRepositories')
 
-// const orders = data.orders
 
-// exports.allOrders = (req, res) => {
-//     res.json({orders: orders })
-// }
+exports.allOrders = async (req, res) => {
+  const orders = await repositories.getAllOrders()
+
+  res.status(200).json({ orders: orders })
+}
 
 // exports.modifyStatusOrder = (req, res) => {
 
@@ -20,48 +18,59 @@
 //         orders[findOrder].status = req.body.status
 //         res.status(201).json({message:`Cambio de estado realizado con exito. El estado de la orden ${req.params.numOrder} es ${data.status[req.body.status]}`})
 //     }
-   
+
 // }
 
 // let numOrder = 1
 
-// exports.createOrder = (req, res) => {
+exports.createOrder = async (req, res) => {
 
-//     const date = new Date
-//     const time = `${date.getHours()}:${date.getMinutes()}`
+  const date = new Date()
+  const time = `${date.getHours()}:${date.getMinutes()}`
 
-//     total = middle.calculateTotal(req)
+  const { order, paymentMethodId, addressId } = req.body
 
-//     const {order,paymentMethodId,destinationAddress} = req.body
+  if (!order || !paymentMethodId || !addressId) {
+    res.status(403).json({ message: 'Faltan ingresar datos para hacer un pedido' })
+  }
+ 
 
-//     const newOrder={
-//         numOrder: numOrder++,
-//         userId: req.params.id,
-//         order: order,
-//         time: time,
-//         status: 0,
-//         destinationAddress: destinationAddress,
-//         paymentMethodId: paymentMethodId,
-//         total: total
-//     }
+  const pro = await repositories.calculateTotal(order)
 
-//     selectedPayment = paymentMethod.find(paymentMethod => paymentMethod.id == paymentMethodId)
+  const newOrder ={
+    time: time,
+    id:req.data.id,
+    status: 1,
+    paymentMethodId:paymentMethodId,
+    address:addressId,
+  }
 
-//     orders.push(newOrder)
-//     res.status(201).json({ message: `El total es de ${total} y el pago seleccionado es ${selectedPayment.method}. Debe confirmar el pedido para continuar`})
-// }
+//   newOrder = await this.createOrder(newOrder)
+//     order.forEach((o) => {
+
+//         let orderDetail = {
+//             amount: o.amount,
+//             productId: o.productId,
+//         }
+
+//         console.log(orderDetail)
+//   })
+
+  res.status(201).json({ message:pro })
+  
+}
 
 // exports.confirmOrder = (req, res) => {
 
 //     orders[findOrder].status = 1
 //     res.status(201).json({message:`Se confirmo el pedido`})
-    
+
 // }
 
 // exports.modifyOrder = (req, res) => {
 
 //     const {order,paymentMethodId,destinationAddress} = req.body
-    
+
 //     orders[findOrder].order = order
 //     orders[findOrder].paymentMethodId = paymentMethodId
 //     orders[findOrder].destinationAddress = destinationAddress

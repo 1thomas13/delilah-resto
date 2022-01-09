@@ -1,52 +1,51 @@
-const models = require("../models")
+const models = require('../models')
+const jwt = require('jsonwebtoken')
+const config = require('../config')
 
-const isLogged = (async(req,res,next) => {
-    findUser = await models.User.findOne({
-        where: {
-            id:req.params.id
-        }
+const isAuthenticated = async (req, res, next) => {
+  try {
+    const token = req.headers.authorization.split(' ')[1]
+    jwt.verify(token, config.config.jwt.secret, (err, data) => {
+      if (err) {
+        return res.status(400).json(err)
+      } else {
+        req.data = data
+        next()
+      }
     })
+  } catch (error) {
+    return res.status(400).json({ err: 'Token invalido' })
+  }
+}
 
-    if(findUser == undefined) return res.status(400).json({message:"El usuario no existe"})
-
-    if(findUser.isLogged == false){
-        res.status(403).json({message:"Debes logearte primero"})   
-        return
+const isAdmin = async (req, res, next) => {
+  const findUser = await models.User.findOne({
+    where: {
+      isAdmin: true,
+      id: req.data.id
     }
-    
-    next()
-    
-})
+  })
 
-const isAdmin = (async(req,res,next) => {
-    findUser = await models.User.findOne({
-        where:{
-            id:req.params.id,
-            isAdmin:true
-        }
-    })
+  if (findUser == undefined) {
+    res.status(403).json({ message: 'Debes ser administrador para acceder' })
+    return
+  }
 
-    if(findUser == undefined) {
-        res.status(403).json({message:"Debes ser administrador para acceder"}) 
-        return
+  next()
+}
+
+const delete_modifyMethod = async (req, res, next) => {
+  const paymentMethod = await models.PaymentMethod.findOne({
+    where: {
+      id: req.params.paymentMethodid
     }
-    
-    next()
-})
+  })
 
-const delete_modifyMethod = (async(req,res,next) => {
+  if (paymentMethod == undefined) {
+    res.status(400).json({ message: 'El id ingresado no pertenece a un metodo de pago' })
+    return
+  }
+  next()
+}
 
-    const paymentMethod = await models.PaymentMethod.findOne ({
-        where:{
-            id:req.params.paymentMethodid
-        }
-    })
-
-    if(paymentMethod == undefined){
-        res.status(400).json({message:"El id ingresado no pertenece a un metodo de pago"})
-        return
-    }
-    next()
-})
-
-module.exports = {isLogged,isAdmin,delete_modifyMethod}
+module.exports = { isAdmin, delete_modifyMethod, isAuthenticated }

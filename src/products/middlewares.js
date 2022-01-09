@@ -1,53 +1,51 @@
-const models = require("../models")
+const models = require('../models')
+const jwt = require('jsonwebtoken')
+const config = require('../config')
 
-const isLogged = (async(req,res,next) => {
-    findUser = await models.User.findOne({
-        where:{
-            id:req.params.id
-        }
-    })
-
-    if(findUser == undefined){
-        return res.status(400).json({message:"El usuario no existe"})
-    } 
-
-    if(findUser.isLogged == false){
-        res.status(403).json({message:"Debes logearte primero"})   
-        return
+const isAdmin = async (req, res, next) => {
+  const findUser = await models.User.findOne({
+    where: {
+      isAdmin: true,
+      id: req.data.id
     }
-    
-    next()
-    
-})
+  })
 
-const isAdmin = (async(req,res,next) => {
-    findUser = await models.User.findOne({
-        where:{
-            id:req.params.id,
-        }
-    })
+  if (findUser == undefined) {
+    res.status(403).json({ message: 'Debes ser administrador para acceder' })
+    return
+  }
 
-    if(findUser.isAdmin == false) {
-        res.status(403).json({message:"Debes ser administrador para acceder"}) 
-        return
-    }
-    
-    next()
-})
-
-const delete_modifyProduct = async(req,res,next) => {
-    
-    const product = await models.Product.findOne({
-        where:{
-            id:req.params.productid
-        }
-    })
-
-    if(product == undefined){
-        res.status(400).json({message:"El id ingresado no pertenece a un producto"})
-        return
-    }
-    next()
+  next()
 }
 
-module.exports = {isLogged,isAdmin,delete_modifyProduct}
+const delete_modifyProduct = async (req, res, next) => {
+  const product = await models.Product.findOne({
+    where: {
+      id: req.params.productid
+    }
+  })
+
+  if (product == undefined) {
+    res.status(400).json({ message: 'El id ingresado no pertenece a un producto' })
+    return
+  }
+  next()
+}
+
+const isAuthenticated = async (req, res, next) => {
+  try {
+    const token = req.headers.authorization.split(' ')[1]
+    jwt.verify(token, config.config.jwt.secret, (err, data) => {
+      if (err) {
+        return res.status(400).json(err)
+      } else {
+        req.data = data
+        next()
+      }
+    })
+  } catch (error) {
+    return res.status(400).json({ err: 'Token invalido' })
+  }
+}
+
+module.exports = { isAdmin, delete_modifyProduct, isAuthenticated }

@@ -1,12 +1,11 @@
-const {Sequelize ,DataTypes, Model } = require('sequelize');
-const {sequelize} = require('../database/sequelize');
+const { Sequelize, DataTypes, Model } = require('sequelize')
+const { sequelize } = require('../database/sequelize')
 
-
-class PaymentMethod extends Model{}
+class PaymentMethod extends Model {}
 
 PaymentMethod.init({
-    method: {type: Sequelize.STRING,allowNull: false},
+  method: { type: Sequelize.STRING, allowNull: false }
 
-},{sequelize,modelName: "PaymentMethod"})
+}, { sequelize, modelName: 'PaymentMethod' })
 
 module.exports = PaymentMethod

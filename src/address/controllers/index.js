@@ -1,70 +1,62 @@
-const repositories = require("../repositories/addressRepositories")
-const express = require("express")
+const repositories = require('../repositories/addressRepositories')
+const express = require('express')
 
-const allAddress = async (req,res) =>{
+const allAddress = async (req, res) => {
+  const userId = req.data.id
+  const allAddress = await repositories.getAll(userId)
 
-    const userId = req.params.userId
-    const allAddress = await repositories.getAll(userId)
-
-    res.status(200).json({Address:allAddress})
-
+  res.status(200).json({ Address: allAddress })
 }
 
-const addAddress = async (req,res) =>{
+const addAddress = async (req, res) => {
+  const { destination } = req.body
+  const userId = req.data.id
 
-    const {destination} = req.body
-    const userId = req.params.userId
-    
-    if(!destination){
-        res.status(400).json({message:"Falta ingresar datos para agregar su destino"})
-    }
+  if (!destination) {
+    res.status(400).json({ message: 'Falta ingresar datos para agregar su destino' })
+  }
 
-    const address = {
-        destination: destination,
-        userId: userId
-    }
-    
-    await repositories.save(address)
-    res.status(201).json({Message:"Direccion añadida"})
+  const address = {
+    destination: destination,
+    userId: userId
+  }
+
+  await repositories.save(address)
+  res.status(201).json({ Message: 'Direccion añadida' })
 }
 
-const updateAddress = async (req,res) =>{
+const updateAddress = async (req, res) => {
+  const { destination } = req.body
+  const userId = req.data.id
+  const addressId = req.params.addressId
 
-    const {destination} = req.body
-    const userId = req.params.userId
-    const addressId = req.params.addressId
-    
-    if(!destination){
-        res.status(400).json({message:"Falta ingresar datos para agregar su destino"})
-    }
+  if (!destination) {
+    res.status(400).json({ message: 'Falta ingresar datos para agregar su destino' })
+  }
 
-    const address = {
-        destination: destination,
-        userId: userId,
-        id:addressId
+  const address = {
+    destination: destination,
+    userId: userId,
+    id: addressId
 
-    }
+  }
 
-    await repositories.update(address)
-    res.status(201).json({Message:"Direccion modificada"})
+  await repositories.update(address)
+  res.status(201).json({ Message: 'Direccion modificada' })
 }
 
-const deleteAddress = async (req,res) =>{
+const deleteAddress = async (req, res) => {
+  const userId = req.data.id
+  const addressId = req.params.addressId
 
-    const userId = req.params.userId
-    const addressId = req.params.addressId
-    
-    const address = {
-        userId: userId,
-        id:addressId
+  const address = {
+    userId: userId,
+    id: addressId
 
-    }
+  }
 
-    await repositories.destroy(address)
-    res.status(201).json({Message:"Direccion eliminada correctamente"})
+  await repositories.destroy(address)
+  res.status(201).json({ Message: 'Direccion eliminada correctamente' })
 }
 
-
-module.exports = {allAddress,addAddress,updateAddress,deleteAddress}
-
-
+module.exports = { allAddress, addAddress, updateAddress, deleteAddress }

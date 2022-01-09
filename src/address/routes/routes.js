@@ -1,15 +1,15 @@
-const express = require("express")
-const router = express.Router() 
+const express = require('express')
+const router = express.Router()
 
 router.use(express.json())
 
-const {allAddress,addAddress,updateAddress,deleteAddress} = require("../controllers")
+const { allAddress, addAddress, updateAddress, deleteAddress } = require('../controllers')
 
-const {isLogged,delete_modifyAddress} = require("../middlewares")
+const { isAuthenticated, delete_modifyAddress } = require('../middlewares')
 
-router.get("/:userId",isLogged,allAddress)
-router.post("/:userId",isLogged,addAddress)
-router.put("/:userId/:addressId",isLogged, delete_modifyAddress, updateAddress)
-router.delete("/:userId/:addressId",isLogged, delete_modifyAddress, deleteAddress)
+router.get('/', isAuthenticated, allAddress)
+router.post('/', isAuthenticated, addAddress)
+router.put('/:addressId', isAuthenticated, delete_modifyAddress, updateAddress)
+router.delete('/:addressId', isAuthenticated, delete_modifyAddress, deleteAddress)
 
 module.exports = router
