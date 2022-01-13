@@ -9,13 +9,13 @@ const { allOrders,createOrder, getHistory, confirmOrder, modifyStatusOrder, modi
 
 router.get('/allOrders', middle.isAuthenticated,middle.isAdmin, allOrders)
 
-router.patch("/:idOrder", middle.isAuthenticated, middle.isAdmin, modifyStatusOrder)
+router.patch("/:idOrder", middle.isAuthenticated, middle.isAdmin, middle.validateOrder, modifyStatusOrder)
 
-router.post("/", middle.isAuthenticated,createOrder)
+router.post("/", middle.isAuthenticated,middle.validateAddressStatus,createOrder)
 
-router.patch("/confirm/:idOrder", middle.isAuthenticated, confirmOrder)
+router.patch("/confirm/:idOrder", middle.isAuthenticated,middle.validateOrder,middle.validateOrderId, confirmOrder)
 
-router.put("/:idOrder", middle.isAuthenticated, modifyOrder)
+router.put("/:idOrder", middle.isAuthenticated,middle.validateOrder,middle.validateAddressStatus,middle.validateModify, modifyOrder)
 
 router.get("/history", middle.isAuthenticated, getHistory)
 

@@ -22,3 +22,5 @@ app.use('/address', addressRoutes)
 app.listen(config.server.port, () => {
   console.log(`Escuchando el puerto: ${config.server.port}`)
 })
+
+module.exports = app

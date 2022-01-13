@@ -38,14 +38,14 @@ Order.init({
     time: {type: Sequelize.STRING,allowNull: false},
     total: {type: Sequelize.INTEGER,allowNull: false},
 
-},{sequelize,modelName: "Order"})
+},{sequelize,timestamps: false,modelName: "Order"})
 
 class OrderDetail extends Model{}
 
 OrderDetail.init({
     amount: {type: Sequelize.INTEGER,allowNull: false},
 
-},{sequelize,modelName: "OrderDetail"})
+},{sequelize,timestamps: false,modelName: "OrderDetail"})
 
 
 class PaymentMethod extends Model{}

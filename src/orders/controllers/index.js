@@ -25,17 +25,18 @@ exports.createOrder = async (req, res) => {
     res.status(403).json({ message: 'Faltan ingresar datos para hacer un pedido' })
   }
  
+  
 
   const total = await repositories.calculateTotal(order)
 
-  const newOrder ={
-    time: time,
-    userId:req.data.id,
-    statusId: 1,
-    paymentMethodId:paymentMethodId,
-    addressId:addressId,
-    total:total
-  }
+    const newOrder ={
+        time: time,
+        userId:req.data.id,
+        statusId: 1,
+        paymentMethodId:paymentMethodId,
+        addressId:addressId,
+        total:total
+    }
  
     const orderCreated = await repositories.createOrder(newOrder)
 
@@ -55,9 +56,9 @@ exports.modifyOrder = async (req,res) => {
      const time = `${date.getHours()}:${date.getMinutes()}`
 
     if (!order || !paymentMethodId || !addressId) {
-        res.status(403).json({ message: 'Faltan ingresar datos para hacer un pedido' })
+        res.status(403).json({ error: 'Faltan ingresar datos para hacer un pedido' })
     }
-     
+
     const total = await repositories.calculateTotal(order)
     
     const update ={
@@ -68,10 +69,13 @@ exports.modifyOrder = async (req,res) => {
         addressId:addressId,
         total:total
     }
+    
+    const updateOrder = await repositories.updateOrder(update,orderId)
 
-    const updateOrder = await repositories.createOrder(update,orderId)
+    await repositories.updateOrderDetails(order,orderId)
 
-    res.status(201).json({message:"Orden modificada correctamente", orden: updateOrder})
+
+    res.status(201).json({message:"Orden modificada correctamente"})
 }
 
 

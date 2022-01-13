@@ -5,12 +5,14 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon ./src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "keywords": [],
   "author": "Thomas Barreto",
   "license": "ISC",
   "devDependencies": {
+    "chai": "^4.3.4",
+    "mocha": "^9.1.3",
     "nodemon": "^2.0.12"
   },
   "dependencies": {
@@ -21,6 +23,7 @@
     "helmet": "^4.6.0",
     "jsonwebtoken": "^8.5.1",
     "mariadb": "^2.5.4",
-    "sequelize": "^6.6.5"
+    "sequelize": "^6.6.5",
+    "supertest": "^6.2.1"
   }
 }
