@@ -6,7 +6,7 @@ const { allProducts, createProduct, modifyProduct, deleteProduct, getProduct } =
 
 router.use(express.json())
 
-router.get('/', middle.isAuthenticated, allProducts)
+router.get('/', middle.isAuthenticated, middle.getCache,allProducts)
 
 router.get('/:productid', middle.isAuthenticated,middle.delete_modifyProduct, getProduct)
 

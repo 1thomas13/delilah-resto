@@ -1,8 +1,24 @@
 const repositories = require('../repositories/productsRepositories')
 
+const redis = require("redis")
+const bluebird = require('bluebird')
+bluebird.promisifyAll(redis)
+const client = redis.createClient()
+
+
 exports.allProducts = async (req, res) => {
-  const products = await repositories.getAll()
-  res.status(200).json({ products: products })
+
+  const cache = req.cache
+  console.log(cache)
+  if(cache == null){
+    const products = await repositories.getAll()
+    
+    client.set("products", JSON.stringify(products), 'EX', 60)
+
+    return res.status(200).json({ products: products})
+  }
+  
+  res.status(200).json({ products: JSON.parse(cache)})
 }
 
 exports.getProduct = async (req, res) => {
@@ -27,7 +43,7 @@ exports.createProduct = async (req, res) => {
   }
 
   await repositories.addProduct(newProduct)
-
+  client.del('products')
   res.status(201).json({ message: 'Producto agregado!' })
 }
 
@@ -46,7 +62,7 @@ exports.modifyProduct = (req, res) => {
   }
 
   repositories.modifyProduct(productid, { modifiedProduct })
-
+  client.del('products')
   res.status(200).json({ message: 'Producto modificado!' })
 }
 
@@ -54,5 +70,6 @@ exports.deleteProduct = async (req, res) => {
   const productid = req.params.productid
 
   await repositories.deleteProduct(productid)
+  client.del('products')
   res.status(200).json({ message: 'Producto eliminado!' })
 }

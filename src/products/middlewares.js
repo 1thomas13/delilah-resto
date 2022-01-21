@@ -2,6 +2,13 @@ const models = require('../models')
 const jwt = require('jsonwebtoken')
 const config = require('../config')
 
+const redis = require('redis')
+const bluebird = require('bluebird')
+bluebird.promisifyAll(redis)
+const client = redis.createClient()
+
+
+
 const isAdmin = async (req, res, next) => {
   const findUser = await models.User.findOne({
     where: {
@@ -48,4 +55,24 @@ const isAuthenticated = async (req, res, next) => {
   }
 }
 
-module.exports = { isAdmin, delete_modifyProduct, isAuthenticated }
+const getCache =async(req, res, next)=>{
+  
+  client.get("products", (error, reply) => {
+    if(error){
+        res.status(400).json({msg: error})
+    } else{
+        req.cache = reply
+        next() 
+    }
+  })
+
+  
+}
+
+
+
+
+
+
+
+module.exports = { isAdmin, delete_modifyProduct, isAuthenticated,getCache }
