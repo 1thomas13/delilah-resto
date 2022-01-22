@@ -1,38 +1,44 @@
 openapi: "3.0.0"
 info:
   title: API-Delilah-Resto
-  version: "0.1"
+  version: "1.2"
   description: Api para el restaurante Delilah Resto
 
 servers:
   - url: http://localhost:3000
 
 paths:
-  /users/{id}:
+  /users/all:
     get:
       tags:
         - Usuarios/Users
       summary: Mostrar todos los usuarios
-      description: Muestra todos los usuarios. Requiere se ADMIN
+      description: Muestra todos los usuarios. Requiere ser ADMIN
+      parameters:
+        - in: path
+          name: authorization
+          schema:
+            type: string
+          required: true
+          description : token
+
       responses:
         "200":
           description: Muestra los usuarios con sus datos y solo el administrador puede verlos
-
         "400":
-          description: Debes logearte y ser administrador
+          description: Debes logearte Y tu token tiene que ser valido
           content:
             application/json:
               schema:
                 type: object
-                example: {'message': Debes estar logeado'}
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          required: true
-          description: ingresar el  ID del usuario
-
+                example: {'message': token invalido'}
+        "403":
+          description: Debes ser administrador
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {'message': Debes ser administrador para acceder'}
   /users:
     post:
       tags:
@@ -75,19 +81,6 @@ paths:
                   type: integer
                   description: numero de telefono
                   example: 123456
-                address:
-                  type: string
-                  description: domicilio
-                  example: belgrano 123
-                isAdmin:
-                  type: boolean
-                  description: Usuario administrador(siempre con usuarios creados va a devolver falso)
-                  example: true
-                isLogged:
-                  type: boolean
-                  description: Muestra si el usuario esta logeado
-                  example: true
-
   /users/login:
     post:
       tags:
@@ -103,27 +96,188 @@ paths:
             application/json:
               schema:
                 type: object
-                example: {'message': El nombre de usuario o el email no coincide con la contraseña'}
+                example: {'error': Creedenciales incorrectas'}
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                username:
-                  type: string
-                  description: Nombre de usuario
-                  example: Juan0107
                 email:
                   type: string
                   description: email del usuario
-                  example: juan@gmail.com
+                  example: "admin@gmail.com"
                 password:
                   type: string
                   description: Contraseña del usuario
-                  example: 123asd
+                  example: 1234
 
-  /orders/allOrders/{id}:
+  /users/suspendUser/{suspendedUserId}:
+    put:
+      tags:
+        - Usuarios/Users
+      summary: Suspender usuario
+      description: El admininstrador puede suspender usuarios que no lo sean
+      parameters:
+        - name: suspendedUserId
+          in: path
+          schema:
+            type: integer
+          required: true
+          description: ingresar el  ID del usuario a suspender
+          
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          required: true
+          description : Ingresar el token del Login
+      responses:
+        "200":
+          description: Usuario suspendido
+        "403":
+          description: Debe ser administrador para suspender un usuario
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {'error:Debes ser administrador'}
+        "400":
+          description: El token no es valido
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {'err: Tokenn invalido'}
+
+  ##Direcciones
+
+  /address:
+    get:
+      tags:
+        - "Direcciones/Address"
+      summary: Muestra todas las direcciones
+      description: Muestra todoas las direcciones del usuario
+      responses:
+        "200":
+          description: Muestra las direcciones del usuario en cuestion
+            sucess
+        "400":
+          description: Debes logearte Y tu token tiene que ser valido
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {'message': token invalido'}
+      parameters:
+
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          required: true
+          description : Ingresar el token del Login
+  
+    post:
+      tags:
+        - "Direcciones/Address"
+      summary: Crear Dureccion
+      description: Permite que el usuario agregue una direccion
+      responses:
+        "200":
+          description: Agregue la direccion satisfactoriamente
+            sucess
+        "400":
+          description: Debes logearte Y tu token tiene que ser valido
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {'message': token invalido'}
+      parameters:
+
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          required: true
+          description : Ingresar el token del Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                addressId:
+                  type: string
+                  example: Avenida 032
+  
+  /address/{addressId:}:
+    put:
+      tags:
+        - "Direcciones/Address"
+      summary: Modificar las direcciones
+      description: Permite modificar las direcciones de los usuarios
+      responses:
+        "200":
+          description: Direccion modificada correctamente
+            sucess
+        "400":
+          description: Debes logearte, tu token tiene que ser valido y el id de la direccion debe pertenecerle al usuario en cuestion
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {'message': token invalido'}
+      parameters:
+
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          required: true
+          description : Ingresar el token del Login
+
+        - in: path
+          name: addressId
+          schema:
+            type: integer
+          required: true
+          description: ingresar el  ID de la direccion a modificar
+    delete:
+      tags:
+        - "Direcciones/Address"
+      summary: Eliminar las direcciones
+      description: Permite eliminar las direcciones de los usuarios
+      responses:
+        "200":
+          description: Direccion eliminar correctamente
+            sucess
+        "400":
+          description: Debes logearte, tu token tiene que ser valido y el id de la direccion debe pertenecerle al usuario en cuestion
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {'message': token invalido'}
+      parameters:
+
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          required: true
+          description : Ingresar el token del Login
+
+        - in: path
+          name: addressId
+          schema:
+            type: integer
+          required: true
+          description: ingresar el  ID de la direccion a eliminar
+  ####ORDERS
+
+  /orders/allOrders:
     get:
       tags:
         - Pedidos/Orders
@@ -134,22 +288,30 @@ paths:
           description: Muestra las ordenes satisfactoriamente
             sucess
         "400":
-          description: Se requiere de estar logeo y ser admin
+          description: Debes logearte Y tu token tiene que ser valido
           content:
             application/json:
               schema:
                 type: object
-                example: {'message': No estar logeado'}
+                example: {'message': token invalido'}
+        "403":
+          description: Debes ser administrador
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {'message': Debes ser administrador para acceder'}
       parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          required: true
-          description: ingresar el  ID del usuario
 
-  /orders/status/{id}/{numOrder}:
-    put:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          required: true
+          description : Ingresar el token del Login
+
+  /orders/status/{idOrder}:
+    patch:
       tags:
         - Pedidos/Orders
       summary: Cambiar el estado de una orden
@@ -159,33 +321,33 @@ paths:
           description: Estado del pedido modificado
             sucess
         "400":
-          description: Se requiere de estar logeo y ser admin
+          description: Debes logearte, tu token tiene que ser valido y el id debe pertenecer a un pedido existe
           content:
             application/json:
               schema:
                 type: object
-                example: {'message': Debes ser administrador'}
-        "404":
-          description: El numero de orden y el numero de pedido tienen que existir
+                example: {'message': token invalido'}
+        "403":
+          description: Debes ser administrador
           content:
             application/json:
               schema:
                 type: object
-                example: {'message': El numero de orden no existe'}
+                example: {'message': Debes ser administrador para acceder'}
       parameters:
         - in: path
-          name: id
+          name: idOrder
           schema:
             type: integer
           required: true
-          description: ingresar el  ID del usuario
-
-        - in: path
-          name: numOrder
+          description: ingresar el  ID del pedido a modificar su estado
+        
+        - name: authorization
+          in: header
           schema:
-            type: integer
+            type: string
           required: true
-          description: ingresar el numero de orden
+          description : Ingresar el token del Login
 
       requestBody:
         content:
@@ -198,7 +360,7 @@ paths:
                   description: Se ingresa un numero de estado para modificar el pedido
                   example: 2
 
-  /orders/{id}:
+  /orders:
     post:
       tags:
         - Pedidos/Orders
@@ -213,19 +375,21 @@ paths:
                 type: object
                 example: {'message': El total es de 100$ y el pago seleccionado es efectivo. Debe confirmar el pedido para continuar'}
         "400":
-          description: Se requiere estar logeado, el producto debe estar disponible y el metodo de pago existir
+          description: Debes logearte, tu token tiene que ser valido, Debe ser valido el metodo de pago y la direccion
           content:
             application/json:
               schema:
                 type: object
-                example: {'message': El producto no esta disponible'}
+                example: {'message': token invalido'}
+  
       parameters:
-        - in: path
-          name: id
+  
+        - name: authorization
+          in: header
           schema:
-            type: integer
+            type: string
           required: true
-          description: ingresar el  ID del usuario
+          description : Ingresar el token del Login
 
       requestBody:
         content:
@@ -249,12 +413,12 @@ paths:
                 paymentMethodId:
                   type: integer
                   example: 1
-                destinationAddress:
-                  type: array
-                  example: Mendoza 231
+                addressId:
+                  type: integer
+                  example: 1
 
-  /orders/confirm/{id}/{numOrder}:
-    get:
+  /orders/confirm/{idOrder}:
+    patch:
       tags:
         - Pedidos/Orders
       summary: Confirmar pedido
@@ -268,28 +432,29 @@ paths:
                   type: object
                   example: {'message': Se confirmo el pedido'}
           "400":
-            description: Se requiere de estar logeado y el numero de orden tiene que existir y pertenecer al usuario
+            description: Debes logearte, tu token tiene que ser valido y el Id del pedido tiene que pertenecer a uno de sus pedidos
             content:
               application/json:
                 schema:
                   type: object
-                  example: {'message': El numero de orden no le pertenece al usuario}
+                  example: {'message': token invalido'}
+        
       parameters:
           - in: path
-            name: id
-            schema:
-              type: integer
-            required: true
-            description: ingresar el  ID del usuario
-
-          - in: path
-            name: numOrder
+            name: idOrder
             schema:
               type: integer
             required: true
             description: ingresar el numero de orden a confirmar
+         
+          - name: authorization
+            in: header
+            schema:
+              type: string
+            required: true
+            description : Ingresar el token del Login
   
-  /orders/{id}/{numOrder}:
+  /orders/{numOrder}:
     put:
       tags:
         - Pedidos/Orders
@@ -304,26 +469,28 @@ paths:
                   type: object
                   example: {'message': pedido modificado'}
           "400":
-            description: Se requiere de estar logeado, el pedido debe ser valido, no debe estar confirmado y debe pertenecer al usuario
+            description: Debes logearte, tu token tiene que ser valido y el Id del pedido tiene que pertenecer a uno de sus pedidos
             content:
               application/json:
                 schema:
                   type: object
-                  example: {'message': No puede modificar el pedido seleccionado'}
+                  example: {'message': token invalido'}
       parameters:
-          - in: path
-            name: id
-            schema:
-              type: integer
-            required: true
-            description: ingresar el  ID del usuario
-
+  
           - in: path
             name: numOrder
             schema:
               type: integer
             required: true
             description: ingresar el numero de orden a confirmar
+          
+         
+          - name: authorization
+            in: header
+            schema:
+              type: string
+            required: true
+            description : Ingresar el token del Login
 
       requestBody:
         content:
@@ -347,11 +514,11 @@ paths:
                 paymentMethodId:
                   type: integer
                   example: 1
-                destinationAddress:
-                  type: array
-                  example: Mendoza 231
+                addressId:
+                  type: integer
+                  example: 1
 
-  /orders/history/{id}:
+  /orders/history:
     get:
       tags:
         - Pedidos/Orders
@@ -361,21 +528,24 @@ paths:
           "201":
             description: Pedido modificado
           "400":
-            description: Se requiere de estar logeado, y tener pedidos
+            description: Debes logearte y tu token tiene que ser valido
             content:
               application/json:
                 schema:
                   type: object
-                  example: {'message': No hiciste ningun pedido'}
+                  example: {'message': token invalido'}
       parameters:
-          - in: path
-            name: id
+            
+          - name: authorization
+            in: header
             schema:
-              type: integer
+              type: string
             required: true
-            description: ingresar el  ID del usuario
+            description : Ingresar el token del Login
 
-  /products/{id}:
+## productos
+
+  /products:
     get:
       tags:
         - Productos/Products 
@@ -385,21 +555,22 @@ paths:
           "200":
             description: Muestra los productos
           "400":
-            description: Se requiere de estar logeado  y ser administrador
+            description: Debes logearte y tu token tiene que ser valido
             content:
               application/json:
                 schema:
                   type: object
-                  example: {'message': No estas logeado'}
+                  example: {'message': token invalido'}
       parameters:
-          - in: path
-            name: id
+      
+          - name: authorization
+            in: header
             schema:
-              type: integer
+              type: string
             required: true
-            description: ingresar el  ID del usuario
+            description : Ingresar el token del Login
         
-  /products/add/{id}:
+  /products/add:
     post:
       tags:
         - Productos/Products 
@@ -427,6 +598,13 @@ paths:
               type: integer
             required: true
             description: ingresar el  ID del usuario
+          
+          - name: authorization
+            in: header
+            schema:
+              type: string
+            required: true
+            description : Ingresar el token del Login
       
       requestBody:
         content:
@@ -447,7 +625,7 @@ paths:
                   description: Se indica si el producto esta disponible
                   example: true
 
-  /products/{id}/{productid}:
+  /products/{productid}:
     put:
       tags:
         - Productos/Products 
@@ -469,18 +647,20 @@ paths:
                   type: object
                   example: {'message': El id del producto no existe'}
       parameters:
-          - in: path
-            name: id
-            schema:
-              type: integer
-            required: true
-            description: ingresar el  ID del usuario
+
           - in: path
             name: productid
             schema:
               type: integer
             required: true
             description: Ingresar el id del producto a modificar
+         
+          - name: authorization
+            in: header
+            schema:
+              type: string
+            required: true
+            description : Ingresar el token del Login
       
       requestBody:
         content:
@@ -501,7 +681,44 @@ paths:
                   description: Se indica si el producto esta disponible
                   example: true
 
-  /products/delete/{id}/{productid}:
+   
+    get:
+      tags:
+        - Productos/Products 
+      summary: Busca un producto por su id
+      description: Permite a buscar un producto por su Id
+      responses:
+          "200":
+            description: Elimina un producto
+            content:
+              application/json:
+                schema:
+                  type: object
+                  example: {'message': Producto eliminado!}
+          "400":
+            description: Se requiere de estar logeado, ser administrador y el producto debe existir
+            content:
+              application/json:
+                schema:
+                  type: object
+                  example: {'message': El id del producto no existe'}
+      parameters:
+    
+        - in: path
+          name: productid
+          schema:
+            type: integer
+          required: true
+          description: Ingresar el id del producto para mostrarlo
+           
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          required: true
+          description : Ingresar el token del Login
+
+  /products/delete/{productid}:
     delete:
       tags:
         - Productos/Products 
@@ -523,49 +740,60 @@ paths:
                   type: object
                   example: {'message': El id del producto no existe'}
       parameters:
-          - in: path
-            name: id
-            schema:
-              type: integer
-            required: true
-            description: ingresar el  ID del usuario
-          - in: path
-            name: productid
-            schema:
-              type: integer
-            required: true
-            description: Ingresar el id del producto a modificar
+    
+        - in: path
+          name: productid
+          schema:
+            type: integer
+          required: true
+          description: Ingresar el id del producto a modificar
+     
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          required: true
+          description : Ingresar el token del Login
 
-  /payment/{id}:
+  
+  /payment:
     get:
       tags:
         - Metodo de pagos/Payment Methods 
       summary: Ver metodos de pago
-      description: Permite a los administradores ver los metodos de pago
+      description: Permite a los usuarios ver los metodos de pago
+      
       responses:
           "200":
             description: Muestra los metodos de pago
           "400":
-            description: Se requiere de estar logeado  y ser administrador
+            description: Debes logearte y tu token tiene que ser valido
             content:
               application/json:
                 schema:
                   type: object
-                  example: {'message': No estas logeado'}
+                  example: {'message': token invalido'}
       parameters:
-          - in: path
-            name: id
+          - name: authorization
+            in: header
             schema:
-              type: integer
-            required: true
-            description: ingresar el  ID del Usuario
+              type: string
+            required: false
+            description : Ingresar el token del Login
         
-  /payment/create/{id}:
+  /payment/create:
     post:
       tags:
         - Metodo de pagos/Payment Methods 
       summary: Crear metodo de pago
       description: Permite a los administradores crear metodos de pago
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          required: true
+          description : Ingresar el token del Login
       responses:
           "200":
             description: Metodo de pago creado
@@ -575,19 +803,12 @@ paths:
                   type: object
                   example: {'message': Metodo de pago creado!}
           "400":
-            description: Se requiere de estar logeado  y ser administrador
+            description: Debes logearte, tu token tiene que ser valido y debes ser admininstrador
             content:
               application/json:
                 schema:
                   type: object
-                  example: {'message': No estas logeado'}
-      parameters:
-          - in: path
-            name: id
-            schema:
-              type: integer
-            required: true
-            description: ingresar el  ID del usuario
+                  example: {'message': token invalido'}
       
       requestBody:
         content:
@@ -600,12 +821,13 @@ paths:
                   description: Nombre del metodo de pago
                   example: Bitcoin
 
-  /payment/{id}/{paymentMethod}:
+  /payment/{paymentMethodid}:
     put:
       tags:
         - Metodo de pagos/Payment Methods 
       summary: Editar metodo de pago
       description: Permite a los administradores editar metodos de pago
+      
       responses:
           "200":
             description: Modifica los metodos de pago
@@ -615,25 +837,26 @@ paths:
                   type: object
                   example: {'message': Metodo de pago creado!}
           "400":
-            description: error Se requiere de estar logeado, ser administrador y el metodo de pago debe existir
+            description: Debes logearte y tu token tiene que ser valido y el id del metodo de pago debe existir
             content:
               application/json:
                 schema:
                   type: object
-                  example: {'message': El metodo de pago seleccionado no existe'}
+                  example: {'message': token invalido'}
       parameters:
+          
           - in: path
-            name: id
-            schema:
-              type: integer
-            required: true
-            description: ingresar el  ID del usuario
-          - in: path
-            name: paymentMethod
+            name: paymentMethodid
             schema:
               type: integer
             required: true
             description: Ingresar el ID del metodo de pago
+          - name: authorization
+            in: header
+            schema:
+              type: string
+            required: false
+            description : Ingresar el token del Login
 
       requestBody:
         content:
@@ -650,12 +873,25 @@ paths:
                   description: Id del metodo de pago
                   example: 1
 
-  /payment/delete/{id}/{paymentMethod}:
+  /payment/delete/{paymentMethodid}:
     delete:
       tags:
         - Metodo de pagos/Payment Methods 
       summary: Eliminar metodo de pago
       description: Permite a los administradores eliminar metodos de pago
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          required: false
+          description : Ingresar el token del Login
+        - in: path
+          name: paymentMethodid
+          schema:
+            type: integer
+          required: true
+          description: Ingresar el ID del metodo de pago
       responses:
           "200":
             description: Modifica los metodos de pago
@@ -665,22 +901,9 @@ paths:
                   type: object
                   example: {'message': Metodo de pago eliminado!}
           "400":
-            description: error Se requiere de estar logeado, ser administrador y el metodo de pago debe existi
+            description: Debes logearte y tu token tiene que ser valido y el id del metodo de pago debe existir
             content:
               application/json:
                 schema:
                   type: object
-                  example: {'message': No eres administrador'}
-      parameters:
-          - in: path
-            name: id
-            schema:
-              type: integer
-            required: true
-            description: ingresar el  ID del usuario
-          - in: path
-            name: paymentMethod
-            schema:
-              type: integer
-            required: true
-            description: Ingresar el ID del metodo de pago
+                  example: {'error': No eres administrador para acceder'}
