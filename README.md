@@ -1,7 +1,7 @@
-# API Delilah Restó - Sprint Project 1 
-
+# API Delilah Restó - Acamica
+---
 API para un restaurante
-Proyecto de el curso backend de [Acamica]
+Proyecto de el curso backend de **Acamica** 
 
 # Tecnologias utilizadas
 
@@ -9,21 +9,28 @@ Proyecto de el curso backend de [Acamica]
 - Swagger
 - Postman
 - Node JS
+- Mariadb
+- Sequelize
+- JsonWebToken
+- Redis
+- Chai
 
-# Inicialización del proyecto
+# Inicialización del proyecto 📋
 
-[Clonar] [el] [repositorio:] Para clonarlo abra la consola de comandos e ingrese: 
+**Servidor**: Primero debe tener un servidor local, una alternativa es instalar un sistema de gestion de base de datos SQL como puede ser XAMPP e inicializarlo, luego crear una base datos con el nombre "delilah_resto" (tiene los datos en el .env.example del repositorio)
+
+**Clonar el repositorio**: Para clonarlo abra la consola de comandos e ingrese: 
 git clone https://gitlab.com/1thomas13/api-delilah-resto.git
 
-[Instalar dependencias: ]
-
-    - npm i express
-    - npm i nodemon
-    - npm i dotenv
-    - npm i cors
+**Instalar dependencias**:  
+    - npm install
 ---
-[Por] [Ultimo] Para ejecutar el script ingrese en la consola "npm run start" con ello el servidor estara corriendo.
+**Ejecucion**: Para ejecutar el script ingrese en la consola "npm run start" con ello el servidor estara corriendo y si quiere iniciar el test ingrese "npm run test"
+
+**Por ultimo...** El usuario administrador por defecto ya esta registrado y sus creedenciales para logearse son:
+ - email: "admin@gmail.com"
+ - password:"1234"
 
 ## Autor ✒️
 
- **Thomas Barreto** - [1thomas13](https://gitlab.com/1thomas13) 
+ **Thomas Barreto** - 1thomas13 (https://gitlab.com/1thomas13) 
