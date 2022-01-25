@@ -24,7 +24,7 @@ git clone https://gitlab.com/1thomas13/api-delilah-resto.git
 
 **Instalar dependencias**:  
     - npm install
----
+
 **Ejecucion**: Para ejecutar el script ingrese en la consola "npm run start" con ello el servidor estara corriendo y si quiere iniciar el test ingrese "npm run test"
 
 **Por ultimo...** El usuario administrador por defecto ya esta registrado y sus creedenciales para logearse son:

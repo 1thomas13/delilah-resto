@@ -7,21 +7,27 @@ info:
 servers:
   - url: http://localhost:3000
 
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT  # optional, for documentation purposes only
+
+security:
+  - bearerAuth: []
+
 paths:
   /users/all:
     get:
+     
       tags:
         - Usuarios/Users
       summary: Mostrar todos los usuarios
       description: Muestra todos los usuarios. Requiere ser ADMIN
-      parameters:
-        - in: path
-          name: authorization
-          schema:
-            type: string
-          required: true
-          description : token
-
+      
+          
+  
       responses:
         "200":
           description: Muestra los usuarios con sus datos y solo el administrador puede verlos
@@ -126,12 +132,6 @@ paths:
           required: true
           description: ingresar el  ID del usuario a suspender
           
-        - name: authorization
-          in: header
-          schema:
-            type: string
-          required: true
-          description : Ingresar el token del Login
       responses:
         "200":
           description: Usuario suspendido
@@ -169,19 +169,11 @@ paths:
               schema:
                 type: object
                 example: {'message': token invalido'}
-      parameters:
-
-        - name: authorization
-          in: header
-          schema:
-            type: string
-          required: true
-          description : Ingresar el token del Login
   
     post:
       tags:
         - "Direcciones/Address"
-      summary: Crear Dureccion
+      summary: Crear Direccion
       description: Permite que el usuario agregue una direccion
       responses:
         "200":
@@ -194,25 +186,18 @@ paths:
               schema:
                 type: object
                 example: {'message': token invalido'}
-      parameters:
 
-        - name: authorization
-          in: header
-          schema:
-            type: string
-          required: true
-          description : Ingresar el token del Login
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                addressId:
+                destination:
                   type: string
                   example: Avenida 032
   
-  /address/{addressId:}:
+  /address/{addressId}:
     put:
       tags:
         - "Direcciones/Address"
@@ -231,19 +216,24 @@ paths:
                 example: {'message': token invalido'}
       parameters:
 
-        - name: authorization
-          in: header
-          schema:
-            type: string
-          required: true
-          description : Ingresar el token del Login
-
         - in: path
           name: addressId
           schema:
             type: integer
           required: true
           description: ingresar el  ID de la direccion a modificar
+      
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                destination:
+                  type: string
+                  description: Se ingresa la nueva direccion 
+                  example: "calle 123 9"
+
     delete:
       tags:
         - "Direcciones/Address"
@@ -261,13 +251,6 @@ paths:
                 type: object
                 example: {'message': token invalido'}
       parameters:
-
-        - name: authorization
-          in: header
-          schema:
-            type: string
-          required: true
-          description : Ingresar el token del Login
 
         - in: path
           name: addressId
@@ -301,16 +284,9 @@ paths:
               schema:
                 type: object
                 example: {'message': Debes ser administrador para acceder'}
-      parameters:
 
-        - name: authorization
-          in: header
-          schema:
-            type: string
-          required: true
-          description : Ingresar el token del Login
 
-  /orders/status/{idOrder}:
+  /orders/{idOrder}:
     patch:
       tags:
         - Pedidos/Orders
@@ -341,13 +317,6 @@ paths:
             type: integer
           required: true
           description: ingresar el  ID del pedido a modificar su estado
-        
-        - name: authorization
-          in: header
-          schema:
-            type: string
-          required: true
-          description : Ingresar el token del Login
 
       requestBody:
         content:
@@ -355,7 +324,7 @@ paths:
             schema:
               type: object
               properties:
-                status:
+                statusId:
                   type: integer
                   description: Se ingresa un numero de estado para modificar el pedido
                   example: 2
@@ -382,15 +351,6 @@ paths:
                 type: object
                 example: {'message': token invalido'}
   
-      parameters:
-  
-        - name: authorization
-          in: header
-          schema:
-            type: string
-          required: true
-          description : Ingresar el token del Login
-
       requestBody:
         content:
           application/json:
@@ -446,13 +406,6 @@ paths:
               type: integer
             required: true
             description: ingresar el numero de orden a confirmar
-         
-          - name: authorization
-            in: header
-            schema:
-              type: string
-            required: true
-            description : Ingresar el token del Login
   
   /orders/{numOrder}:
     put:
@@ -484,13 +437,6 @@ paths:
             required: true
             description: ingresar el numero de orden a confirmar
           
-         
-          - name: authorization
-            in: header
-            schema:
-              type: string
-            required: true
-            description : Ingresar el token del Login
 
       requestBody:
         content:
@@ -534,14 +480,6 @@ paths:
                 schema:
                   type: object
                   example: {'message': token invalido'}
-      parameters:
-            
-          - name: authorization
-            in: header
-            schema:
-              type: string
-            required: true
-            description : Ingresar el token del Login
 
 ## productos
 
@@ -561,14 +499,6 @@ paths:
                 schema:
                   type: object
                   example: {'message': token invalido'}
-      parameters:
-      
-          - name: authorization
-            in: header
-            schema:
-              type: string
-            required: true
-            description : Ingresar el token del Login
         
   /products/add:
     post:
@@ -591,21 +521,7 @@ paths:
                 schema:
                   type: object
                   example: {'message': No estas logeado'}
-      parameters:
-          - in: path
-            name: id
-            schema:
-              type: integer
-            required: true
-            description: ingresar el  ID del usuario
-          
-          - name: authorization
-            in: header
-            schema:
-              type: string
-            required: true
-            description : Ingresar el token del Login
-      
+
       requestBody:
         content:
           application/json:
@@ -654,13 +570,6 @@ paths:
               type: integer
             required: true
             description: Ingresar el id del producto a modificar
-         
-          - name: authorization
-            in: header
-            schema:
-              type: string
-            required: true
-            description : Ingresar el token del Login
       
       requestBody:
         content:
@@ -711,12 +620,6 @@ paths:
           required: true
           description: Ingresar el id del producto para mostrarlo
            
-        - name: authorization
-          in: header
-          schema:
-            type: string
-          required: true
-          description : Ingresar el token del Login
 
   /products/delete/{productid}:
     delete:
@@ -747,14 +650,6 @@ paths:
             type: integer
           required: true
           description: Ingresar el id del producto a modificar
-     
-        - name: authorization
-          in: header
-          schema:
-            type: string
-          required: true
-          description : Ingresar el token del Login
-
   
   /payment:
     get:
@@ -773,13 +668,6 @@ paths:
                 schema:
                   type: object
                   example: {'message': token invalido'}
-      parameters:
-          - name: authorization
-            in: header
-            schema:
-              type: string
-            required: false
-            description : Ingresar el token del Login
         
   /payment/create:
     post:
@@ -787,13 +675,7 @@ paths:
         - Metodo de pagos/Payment Methods 
       summary: Crear metodo de pago
       description: Permite a los administradores crear metodos de pago
-      parameters:
-        - name: authorization
-          in: header
-          schema:
-            type: string
-          required: true
-          description : Ingresar el token del Login
+  
       responses:
           "200":
             description: Metodo de pago creado
@@ -851,12 +733,7 @@ paths:
               type: integer
             required: true
             description: Ingresar el ID del metodo de pago
-          - name: authorization
-            in: header
-            schema:
-              type: string
-            required: false
-            description : Ingresar el token del Login
+
 
       requestBody:
         content:
@@ -880,12 +757,7 @@ paths:
       summary: Eliminar metodo de pago
       description: Permite a los administradores eliminar metodos de pago
       parameters:
-        - name: authorization
-          in: header
-          schema:
-            type: string
-          required: false
-          description : Ingresar el token del Login
+    
         - in: path
           name: paymentMethodid
           schema:
@@ -907,3 +779,5 @@ paths:
                 schema:
                   type: object
                   example: {'error': No eres administrador para acceder'}
+
+
