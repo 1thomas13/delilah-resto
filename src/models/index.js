@@ -78,7 +78,7 @@ Order.hasMany(OrderDetail, {foreignKey: "orderId"})
 Product.hasMany(OrderDetail, {foreignKey: "productId"})
 
 ;(async() => {
-    await sequelize.sync({ force: true })
+    await sequelize.sync()
     console.log("All models were synchronized successfully.")
 
     await OrderStatus.create({
@@ -132,6 +132,6 @@ Product.hasMany(OrderDetail, {foreignKey: "productId"})
         isSuspended:false
     })
 
-})()
+})
 
 module.exports = {User,Address,Product,OrderDetail,Order,PaymentMethod,OrderStatus}

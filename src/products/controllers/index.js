@@ -1,9 +1,13 @@
 const repositories = require('../repositories/productsRepositories')
+const config = require("../../config")
 
 const redis = require("redis")
 const bluebird = require('bluebird')
 bluebird.promisifyAll(redis)
-const client = redis.createClient()
+const client = redis.createClient({
+  host:config.config.redis.host,
+  port:config.config.redis.port
+})
 
 
 exports.allProducts = async (req, res) => {
