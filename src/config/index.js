@@ -32,6 +32,14 @@ exports.config = {
     clientID: process.env.ID_LINKEDIN,
     clientSecret: process.env.SECRET_LINKEDIN,
     callbackURL: process.env.CALLBACK_LINKEDIN
+  },
+  authGitHub:{
+    clientID: process.env.ID_GITHUB,
+    clientSecret: process.env.SECRET_GITHUB,
+    callbackURL: process.env.CALLBACK_GITHUB
+  },
+  expressSession:{
+    secret:  process.env.SECRET_EXPRESS_SESSION,
   }
 
 }
