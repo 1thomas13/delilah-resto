@@ -99,11 +99,12 @@ function logout(req, res, next) {
 }
 
 router.get("/home", isLoggedIn, (req, res) => {
+  return res.status(200).redirect("http://localhost:3001");
   return res.send({ Mensaje: `Bienvenido ${req.user.displayName}` });
 });
 
 router.get("/logout", isLoggedIn, logout, (req, res) => {
-  res.status(200).redirect("/home");
+  res.status(200).redirect("http://localhost:3001/login");
 });
 
 module.exports = router;
