@@ -18,6 +18,7 @@ router.use(passport.session());
 const isLoggedIn = (req, res, next) => {
   
   if (req.isAuthenticated()) {
+    console.log(req.user)
     next();
   } else {
     res.status(401).json({ Mensaje: "Usuario no autenticado" });

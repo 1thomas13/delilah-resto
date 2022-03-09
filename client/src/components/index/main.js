@@ -56,7 +56,10 @@ const Main = () => {
                 <span class="font-bold ">{cartLength} Products</span>
                 <span class="text-info">Subtotal: $999</span>
                 <div class="card-actions">
-                  <button class="btn btn-primary btn-block">Buy</button>
+                  <button class="btn btn-primary btn-block">Buy with Mercado pago</button>
+                </div>
+                <div class="card-actions">
+                  <button class="btn btn-primary btn-block">Buy with Paypal</button>
                 </div>
               </div>
             </div>
@@ -125,7 +128,7 @@ const Main = () => {
                       Add to cart
                       <div class="indicator">
 
-                <span class="badge badge text-white ">{cartLength}</span>
+                {/* <span class="badge badge text-white ">{cartLength}</span> */}
               </div>
                     </button>
                   </div>

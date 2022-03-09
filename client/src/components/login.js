@@ -25,7 +25,7 @@ const form = () => {
         <div class="flex items-start mb-6">
           
           <div class="ml-3 text-sm">
-           <Link to="/hola" class="text-sky-500">No tengo cuenta</Link>
+           <Link to="/hola" class="text-sky-500">I dont have an account</Link>
           </div>
         </div>
         <button onClick={()=>singIn()} type="submit" class=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ">Submit</button>

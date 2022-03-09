@@ -14,7 +14,7 @@ exports.addPayment = async (req, res) => {
   const product = await models.Product.findOne({where:{id:productId}})
 
   if(product.available === false){
-    res.status(400).json({message:"El producto no seleccionado no esta disponible"})
+    res.status(400).json({message:"El producto seleccionado no esta disponible"})
   }
 
   let preference = {
