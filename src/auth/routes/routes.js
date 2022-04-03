@@ -5,6 +5,10 @@ const config = require("../../config");
 
 const router = express.Router();
 
+const middlewares = require("../middlewares")
+
+const {login} = require("../../users/controllers");
+
 router.use(
   session({
     secret: config.config.expressSession.secret,
@@ -15,15 +19,7 @@ router.use(
 router.use(passport.initialize());
 router.use(passport.session());
 
-const isLoggedIn = (req, res, next) => {
-  
-  if (req.isAuthenticated()) {
-    console.log(req.user)
-    next();
-  } else {
-    res.status(401).json({ Mensaje: "Usuario no autenticado" });
-  }
-};
+
 
 router.get("/failed", (req, res) => {
   console.log("Falla la loguearse");
@@ -93,18 +89,16 @@ router.get(
   })
 );
 
-function logout(req, res, next) {
-  req.logout();
 
-  next();
-}
 
-router.get("/home", isLoggedIn, (req, res) => {
-  return res.status(200).redirect("http://localhost:3001");
-  return res.send({ Mensaje: `Bienvenido ${req.user.displayName}` });
+router.get("/home",  middlewares.isLoggedIn,login, (req, res) => {
+  
+  const query = req.token
+  return res.status(200).redirect(`http://localhost:3001?${query}`);
 });
 
-router.get("/logout", isLoggedIn, logout, (req, res) => {
+router.get("/logout", middlewares.isLoggedIn, middlewares.logout, (req, res) => {
+  console.log("te deslogeaste correctamente")
   res.status(200).redirect("http://localhost:3001/login");
 });
 

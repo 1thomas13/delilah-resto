@@ -7,22 +7,16 @@ mercadopago.configure({
     "TEST-5904774239142166-030417-faa39afacc84314243386e3834d2798a-1079047997",
 });
 
-exports.addPayment = async (req, res) => {
+exports.addPaymentMercadoPago = async (req, res) => {
 
-  const {quantity,productId} = req.body
-
-  const product = await models.Product.findOne({where:{id:productId}})
-
-  if(product.available === false){
-    res.status(400).json({message:"El producto seleccionado no esta disponible"})
-  }
-
+  const {price} = req.body
+  
   let preference = {
     items: [
       {
-        title: product.name,
-        unit_price: product.price,
-        quantity
+        title: "Order",
+        unit_price: parseInt(price),
+        quantity:1
       },
     ],
   };
@@ -39,7 +33,7 @@ exports.addPayment = async (req, res) => {
     });
 };
 
-exports.get = async (req, res) => {
+exports.getMercadoPago = async (req, res) => {
   let params = req.query;
   res.status(200).json(params);
 };

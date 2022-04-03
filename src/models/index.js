@@ -1,137 +1,194 @@
-const {Sequelize ,DataTypes, Model } = require('sequelize');
-const {sequelize} = require('../database/sequelize');
-const bcrypt = require("bcrypt")
+const { Sequelize, DataTypes, Model } = require("sequelize");
+const { sequelize } = require("../database/sequelize");
+const bcrypt = require("bcrypt");
 
-class User extends Model{}
+class User extends Model {}
 
-User.init({
-    name: {type: Sequelize.STRING,allowNull: false},
-    username: {type: Sequelize.STRING,allowNull: false},
-    password: {type: Sequelize.STRING,allowNull: false,},
-    email: {type: Sequelize.STRING,allowNull: false},
-    numberPhone: {type: Sequelize.INTEGER,allowNull: false},
-    isAdmin: {type: Sequelize.BOOLEAN,allowNull: false, defaultValue:false},
-    isSuspended: {type: Sequelize.BOOLEAN,allowNull: false, defaultValue:false},
+User.init(
+  {
+    name: { type: Sequelize.STRING, allowNull: false },
+    username: { type: Sequelize.STRING, allowNull: true },
+    password: { type: Sequelize.STRING, allowNull: false },
+    email: { type: Sequelize.STRING, allowNull: false },
+    numberPhone: { type: Sequelize.INTEGER, allowNull: true },
+    isAdmin: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false },
+    isSuspended: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+  },
+  { sequelize, timestamps: false, modelName: "User" }
+);
 
-},{sequelize,timestamps: false,modelName: "User"})
+class Address extends Model {}
 
+Address.init(
+  {
+    destination: { type: Sequelize.STRING, allowNull: false },
+  },
+  { sequelize, timestamps: false, modelName: "Address" }
+);
 
-class Address extends Model{}
+class Product extends Model {}
 
-Address.init({
-    destination: {type: Sequelize.STRING,allowNull: false},
+Product.init(
+  {
+    name: { type: Sequelize.STRING, allowNull: false },
+    price: { type: Sequelize.INTEGER, allowNull: false },
+    available: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
+    },
+    description: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      defaultValue: true,
+    },
+    image: { type: Sequelize.STRING, allowNull: false, defaultValue: true },
+  },
+  { sequelize, timestamps: false, modelName: "Products" }
+);
 
-},{sequelize,timestamps: false,modelName: "Address"})
+class Order extends Model {}
 
-class Product extends Model{}
+Order.init(
+  {
+    time: { type: Sequelize.STRING, allowNull: false },
+    total: { type: Sequelize.INTEGER, allowNull: false },
+  },
+  { sequelize, timestamps: false, modelName: "Order" }
+);
 
-Product.init({
-    name: {type: Sequelize.STRING,allowNull: false},
-    price: {type: Sequelize.INTEGER,allowNull: false},
-    available: {type: Sequelize.BOOLEAN,allowNull: false,defaultValue:true},
+class OrderDetail extends Model {}
 
-},{sequelize,timestamps: false,modelName: "Products"})
+OrderDetail.init(
+  {
+    amount: { type: Sequelize.INTEGER, allowNull: false },
+  },
+  { sequelize, timestamps: false, modelName: "OrderDetail" }
+);
 
-class Order extends Model{}
+class PaymentMethod extends Model {}
 
-Order.init({
-    time: {type: Sequelize.STRING,allowNull: false},
-    total: {type: Sequelize.INTEGER,allowNull: false},
+PaymentMethod.init(
+  {
+    method: { type: Sequelize.STRING, allowNull: false },
+  },
+  { sequelize, timestamps: false, modelName: "PaymentMethod" }
+);
 
-},{sequelize,timestamps: false,modelName: "Order"})
+class OrderStatus extends Model {}
 
-class OrderDetail extends Model{}
+OrderStatus.init(
+  {
+    status: { type: Sequelize.STRING, allowNull: false },
+  },
+  { sequelize, timestamps: false, modelName: "OrderStatus" }
+);
 
-OrderDetail.init({
-    amount: {type: Sequelize.INTEGER,allowNull: false},
+User.hasMany(Order, { foreignKey: "userId" });
 
-},{sequelize,timestamps: false,modelName: "OrderDetail"})
+User.hasMany(Address, { foreignKey: "userId" });
 
+OrderStatus.hasMany(Order, { foreignKey: "statusId" });
 
-class PaymentMethod extends Model{}
+Address.hasMany(Order, { foreignKey: "addressId" });
 
-PaymentMethod.init({
-    method: {type: Sequelize.STRING,allowNull: false},
+PaymentMethod.hasMany(Order, { foreignKey: "paymentMethodId" });
 
-},{sequelize,timestamps: false,modelName: "PaymentMethod"})
+Order.hasMany(OrderDetail, { foreignKey: "orderId" });
 
-class OrderStatus extends Model{}
+Product.hasMany(OrderDetail, { foreignKey: "productId" });
+(async () => {
+  await sequelize.sync();
+  console.log("All models were synchronized successfully.");
 
-OrderStatus.init({
-    status: {type: Sequelize.STRING,allowNull: false},
+  // await OrderStatus.create({
+  //   status: "new",
+  // });
+  // await OrderStatus.create({
+  //   status: "confirmed",
+  // });
+  // await OrderStatus.create({
+  //   status: "preparing",
+  // });
+  // await OrderStatus.create({
+  //   status: "sendig",
+  // });
+  // await OrderStatus.create({
+  //   status: "delivered",
+  // });
+  // await OrderStatus.create({
+  //   status: "cancelled",
+  // });
 
-},{sequelize,timestamps: false,modelName: "OrderStatus"})
+  // await PaymentMethod.create({
+  //   method: "efectivo",
+  // });
 
+  // await PaymentMethod.create({
+  //   method: "debito",
+  // });
 
-User.hasMany(Order, {foreignKey: "userId"})
+  // await Product.create({
+  //   name: "Pizza Mozzarella",
+  //   price: 1000,
+  //   available: true,
+  //   image: "https://imgur.com/8e1W2T4.jpg",
+  // });
 
-User.hasMany(Address, {foreignKey: "userId"})
+  // await Product.create({
+  //   name: "Hamburguesa Completa",
+  //   price: 930,
+  //   available: true,
+  //   image: "https://imgur.com/a2bbWCB.jpg",
+  // });
+  // await Product.create({
+  //   name: "Empanadas de carne",
+  //   price: 900,
+  //   available: true,
+  //   image: "https://imgur.com/DiQyI6U.jpg",
+  // });
+  // await Product.create({
+  //   name: "Lasaña",
+  //   price: 1500,
+  //   available: true,
+  //   image: "https://imgur.com/oZqi0gJ.jpg",
+  // });
+  // await Product.create({
+  //   name: "Parrilla completa",
+  //   price: 1600,
+  //   available: true,
+  //   image: "https://imgur.com/whrvYUE.jpg",
+  // });
+  // await Product.create({
+  //   name: "Napolitana con fritas",
+  //   price: 1600,
+  //   available: true,
+  //   image: "https://imgur.com/zwzCJqb.jpg",
+  // });
 
-OrderStatus.hasMany(Order, {foreignKey: "statusId"})
+  // const hashPass = bcrypt.hashSync("1234", 8);
 
-Address.hasMany(Order, {foreignKey: "addressId"})
+  // await User.create({
+  //   name: "xxxx xxxxx",
+  //   username: "Admin",
+  //   password: hashPass,
+  //   email: "admin@gmail.com",
+  //   numberPhone: 2943242422,
+  //   isAdmin: true,
+  //   isSuspended: false,
+  // });
+})();
 
-PaymentMethod.hasMany(Order, {foreignKey: "paymentMethodId"})
-
-Order.hasMany(OrderDetail, {foreignKey: "orderId"})
-
-Product.hasMany(OrderDetail, {foreignKey: "productId"})
-
-;(async() => {
-    await sequelize.sync()
-    console.log("All models were synchronized successfully.")
-
-    await OrderStatus.create({
-        status: "new",
-    })
-    await OrderStatus.create({
-        status: "confirmed",
-    })
-    await OrderStatus.create({
-        status: "preparing",
-    })
-    await OrderStatus.create({
-        status: "sendig",
-    })
-    await OrderStatus.create({
-        status: "delivered",
-    })
-    await OrderStatus.create({
-        status: "cancelled",
-    })
-
-    await PaymentMethod.create({
-        method:"efectivo",
-    })
-
-    await PaymentMethod.create({
-        method:"debito",
-    })
-
-    await Product.create({
-        name:"Pizza Mozzarella",
-        price:700,
-        available:true
-    })
-
-    await Product.create({
-        name:"Hamburguesa Completa",
-        price:630,
-        available:true
-    })
-
-    const hashPass = bcrypt.hashSync("1234", 8);
-
-    await User.create({
-        name:"xxxx xxxxx",
-        username:"Admin",
-        password:hashPass,
-        email:"admin@gmail.com",
-        numberPhone:2943242422,
-        isAdmin:true,
-        isSuspended:false
-    })
-
-})
-
-module.exports = {User,Address,Product,OrderDetail,Order,PaymentMethod,OrderStatus}
+module.exports = {
+  User,
+  Address,
+  Product,
+  OrderDetail,
+  Order,
+  PaymentMethod,
+  OrderStatus,
+};

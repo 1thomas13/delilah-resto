@@ -50,6 +50,13 @@ const loginValidate = async (req, res, next) => {
 }
 
 const emailValidate = async (req, res, next) => {
+
+  const { name, username, password, email, numberPhone } = req.body
+
+  if (!name || !username || !password || !email || !numberPhone) {
+    return res.status(400).json({ message: 'Todos los campos son obligatorios' })
+  }
+
   const findUser = await models.User.findOne({ where: { email: req.body.email } })
 
   if (findUser == undefined) next()

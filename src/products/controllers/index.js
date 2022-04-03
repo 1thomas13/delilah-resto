@@ -34,7 +34,7 @@ exports.getProduct = async (req, res) => {
 }
 
 exports.createProduct = async (req, res) => {
-  const { name, price, available } = req.body
+  const { name, price, available,image } = req.body
 
   if (!name || !price) {
     res.status(400).json({ message: 'Falta ingresar datos para crear un producto' })
@@ -43,7 +43,8 @@ exports.createProduct = async (req, res) => {
   const newProduct = {
     name: name,
     price: price,
-    available: available
+    available: available,
+    image,
   }
 
   await repositories.addProduct(newProduct)
@@ -53,7 +54,7 @@ exports.createProduct = async (req, res) => {
 
 exports.modifyProduct = (req, res) => {
   const productid = req.params.productid
-  const { name, price, available } = req.body
+  const { name, price, available,image } = req.body
 
   if (name == undefined || price == undefined) {
     res.status(400).json({ message: 'Falta ingresar modificar un crear producto' })
@@ -62,7 +63,9 @@ exports.modifyProduct = (req, res) => {
   const modifiedProduct = {
     name: name,
     price: price,
-    available: available
+    available: available,
+    image,
+    
   }
 
   repositories.modifyProduct(productid, { modifiedProduct })

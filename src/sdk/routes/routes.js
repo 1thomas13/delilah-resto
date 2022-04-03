@@ -3,10 +3,22 @@ const router = express.Router()
 
 router.use(express.json())
 
-const {addPayment,get} = require("../controllers")
+const {isAuthenticated} = require('../middlewares')
 
-router.post('/pay', addPayment)
+const {addPaymentMercadoPago,getMercadoPago} = require("../controllers/mercadoPago")
 
-router.get('/paya', get)
 
-module.exports = router;
+const {addPaymentPaypal,sucess,cancel} = require("../controllers/paypal")
+
+
+router.post('/pay/mercadopago',isAuthenticated, addPaymentMercadoPago)
+
+router.post('/pay/paypal',isAuthenticated, addPaymentPaypal)
+
+router.get('/sucess',isAuthenticated, sucess)
+
+router.get('/cancel',isAuthenticated, cancel)
+
+router.get('/pay',isAuthenticated, getMercadoPago)
+
+module.exports = router

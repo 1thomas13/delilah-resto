@@ -27,6 +27,11 @@ app.use('/address', addressRoutes)
 app.use('/', authRoutes)
 app.use('/', sdkRoutes)
 
+
+
+
+
+
 app.listen(config.server.port, () => {
   console.log(`Escuchando el puerto: ${config.server.port}`)
 })
