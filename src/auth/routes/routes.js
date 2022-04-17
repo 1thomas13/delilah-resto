@@ -44,9 +44,7 @@ router.get(
 
 require("../controllers/facebook");
 
-router.get("/auth/facebook", passport.authenticate("facebook"), (req, res) =>
-  console.log("Usuario autenticado")
-);
+router.get("/auth/facebook", passport.authenticate("facebook", { scope: ["email"] }));
 
 router.get(
   "/auth/facebook/callback",

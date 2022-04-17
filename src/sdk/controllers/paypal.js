@@ -27,7 +27,7 @@ paypal.configure({
         "transactions": [{
             "item_list": {
                 "items": [{
-                    "name": "Red Sox Hat",
+                    "name": "Order",
                     "sku": "001",
                     "price": price,
                     "currency": "USD",
@@ -38,7 +38,7 @@ paypal.configure({
                 "currency": "USD",
                 "total":  price
             },
-            "description": "Hat for the best team ever"
+            "description": "Pedido"
         }]
     };
   
@@ -51,7 +51,8 @@ paypal.configure({
               for(let i = 0;i < payment.links.length;i++){
                 if(payment.links[i].rel === 'approval_url'){
                     console.log(payment.links[i])
-                  res.redirect(payment.links[i].href);
+                    res.json(payment.links[i].href)
+                     
                 }
               }
           }

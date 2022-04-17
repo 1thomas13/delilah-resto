@@ -19,6 +19,13 @@ passport.use(new GoogleStrategy({
   callbackURL: config.config.authGoogle.callbackURL
 },
   function (accessToken, refreshToken, profile, done) {
-    return done(null, profile);
+    const payload = {
+
+      name: profile._json.name,
+      email: profile._json.email,
+    }
+    
+    return done(null, payload);
   }
+  
 ))

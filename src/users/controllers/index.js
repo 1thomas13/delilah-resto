@@ -46,9 +46,9 @@ exports.login = async (req, res,next) => {
   try {
     
     if(req.isAuthenticated){
-     
-      const {email,name} = req.user._json
-  
+      
+      const {email,name} = req.user
+      
       const password = Math.random().toString(32).slice(2)
 
       const hashPass = bcrypt.hashSync(password, 8)

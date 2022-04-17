@@ -102,7 +102,7 @@ Order.hasMany(OrderDetail, { foreignKey: "orderId" });
 
 Product.hasMany(OrderDetail, { foreignKey: "productId" });
 (async () => {
-  await sequelize.sync();
+  await sequelize.sync({ force: true });
   console.log("All models were synchronized successfully.");
 
   // await OrderStatus.create({
@@ -132,43 +132,43 @@ Product.hasMany(OrderDetail, { foreignKey: "productId" });
   //   method: "debito",
   // });
 
-  // await Product.create({
-  //   name: "Pizza Mozzarella",
-  //   price: 1000,
-  //   available: true,
-  //   image: "https://imgur.com/8e1W2T4.jpg",
-  // });
+  await Product.create({
+    name: "Pizza Mozzarella",
+    price: 1000,
+    available: true,
+    image: "https://imgur.com/8e1W2T4.jpg",
+  });
 
-  // await Product.create({
-  //   name: "Hamburguesa Completa",
-  //   price: 930,
-  //   available: true,
-  //   image: "https://imgur.com/a2bbWCB.jpg",
-  // });
-  // await Product.create({
-  //   name: "Empanadas de carne",
-  //   price: 900,
-  //   available: true,
-  //   image: "https://imgur.com/DiQyI6U.jpg",
-  // });
-  // await Product.create({
-  //   name: "Lasaña",
-  //   price: 1500,
-  //   available: true,
-  //   image: "https://imgur.com/oZqi0gJ.jpg",
-  // });
-  // await Product.create({
-  //   name: "Parrilla completa",
-  //   price: 1600,
-  //   available: true,
-  //   image: "https://imgur.com/whrvYUE.jpg",
-  // });
-  // await Product.create({
-  //   name: "Napolitana con fritas",
-  //   price: 1600,
-  //   available: true,
-  //   image: "https://imgur.com/zwzCJqb.jpg",
-  // });
+  await Product.create({
+    name: "Hamburguesa Completa",
+    price: 930,
+    available: true,
+    image: "https://imgur.com/a2bbWCB.jpg",
+  });
+  await Product.create({
+    name: "Empanadas de carne",
+    price: 900,
+    available: true,
+    image: "https://imgur.com/DiQyI6U.jpg",
+  });
+  await Product.create({
+    name: "Lasaña",
+    price: 1500,
+    available: true,
+    image: "https://imgur.com/oZqi0gJ.jpg",
+  });
+  await Product.create({
+    name: "Parrilla completa",
+    price: 1600,
+    available: true,
+    image: "https://imgur.com/whrvYUE.jpg",
+  });
+  await Product.create({
+    name: "Napolitana con fritas",
+    price: 1600,
+    available: true,
+    image: "https://imgur.com/zwzCJqb.jpg",
+  });
 
   // const hashPass = bcrypt.hashSync("1234", 8);
 

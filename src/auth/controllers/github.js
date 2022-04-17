@@ -19,6 +19,11 @@ passport.use(new GitHubStrategy({
   callbackURL: config.config.authGitHub.callbackURL
 },
   function (accessToken, refreshToken, profile, done) {
-    return done(null, profile);
+    const payload = {
+
+      name: profile.displayName,
+      email: profile.emails[0].value
+    }
+    return done(null, payload);
   }
 ))

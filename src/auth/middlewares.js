@@ -7,7 +7,6 @@ const config = require("../config");
 
 exports.isLoggedIn = (req, res, next) => {
   if (req.isAuthenticated()) {
-    console.log(req.user);
     next();
   } else {
     res.status(401).json({ Mensaje: "Usuario no autenticado" });

@@ -16,9 +16,16 @@ passport.deserializeUser(function (user, done) {
 passport.use(new LinkedinStrategy({
   clientID: config.config.authLinkedin.clientID,
   clientSecret: config.config.authLinkedin.clientSecret,
-  callbackURL: config.config.authLinkedin.callbackURL
+  callbackURL: config.config.authLinkedin.callbackURL,
+  scope: ['r_emailaddress', 'r_liteprofile']
 },
   function (accessToken, refreshToken, profile, done) {
-    return done(null, profile);
+    const payload = {
+
+      name: profile.displayName,
+      email: profile.emails[0].value,
+    }
+    
+    return done(null, payload);
   }
 ))

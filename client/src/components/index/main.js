@@ -87,8 +87,6 @@ const Main = () => {
       method: "POST",
       headers:{
         'Content-Type': 'application/json',
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type",
         'Authorization': 'Bearer ' + token,
       },
       body: JSON.stringify({"price":total}),
@@ -96,8 +94,8 @@ const Main = () => {
       if (response.ok) {
         const responseJSON = await response.json();
         console.log(responseJSON);
-        
-        window.location.href = responseJSON.response.init_point;
+        window.location.href = responseJSON
+      
       }
     })
   }
@@ -197,7 +195,9 @@ const Main = () => {
               <li>
                 <button
                   onClick={() =>
-                    (window.location.href = "http://localhost:3000/login")
+                    (
+                      window.location.href = "http://localhost:3000/logout"
+                      )
                   }
                 >
                   Logout
