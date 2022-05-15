@@ -7,10 +7,7 @@ const bluebird = require("bluebird");
 
 bluebird.promisifyAll(redis);
 
-const client = redis.createClient({
-  host: config.config.redis.host,
-  port: config.config.redis.port,
-});
+const client = redis.createClient();
 
 exports.allProducts = async (req, res) => {
   const cache = req.cache;
@@ -19,10 +16,10 @@ exports.allProducts = async (req, res) => {
     const products = await repositories.getAll();
 
     client.set("products", JSON.stringify(products), "EX", 60);
-
+    console.log('no')
     return res.status(200).json({ products: products });
   }
-
+  console.log('si')
   res.status(200).json({ products: JSON.parse(cache) });
 };
 
