@@ -8,8 +8,8 @@ const bluebird = require("bluebird");
 bluebird.promisifyAll(redis);
 
 const client = redis.createClient({
-  host: config.config.redis.host,
-  port: config.config.redis.port,
+	host:"delilah-redis.amtsns.ng.0001.use2.cache.amazonaws.com",
+	port:6379
 });
 
 exports.allProducts = async (req, res) => {
