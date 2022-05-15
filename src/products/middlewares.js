@@ -6,10 +6,6 @@ const redis = require('redis')
 const bluebird = require('bluebird')
 bluebird.promisifyAll(redis)
 
-const client = redis.createClient({
-    host:"delilah-redis.amtsns.ng.0001.use2.cache.amazonaws.com",
-    port: 6379
-});
 
 
 const isAdmin = async (req, res, next) => {
@@ -58,24 +54,10 @@ const isAuthenticated = async (req, res, next) => {
   }
 }
 
-const getCache =async(req, res, next)=>{
-  
-  client.get("products", (error, reply) => {
-    if(error){
-        res.status(400).json({msg: error})
-    } else{
-        req.cache = reply
-        next() 
-    }
-  })
-
-  
-}
 
 
 
 
 
 
-
-module.exports = { isAdmin, delete_modifyProduct, isAuthenticated,getCache }
+module.exports = { isAdmin, delete_modifyProduct, isAuthenticated }
