@@ -5,8 +5,11 @@ const config = require('../config')
 const redis = require('redis')
 const bluebird = require('bluebird')
 bluebird.promisifyAll(redis)
-const client = redis.createClient()
 
+const client = redis.createClient({
+    host:"delilah-redis.amtsns.ng.0001.use2.cache.amazonaws.com",
+    port: 6379
+});
 
 
 const isAdmin = async (req, res, next) => {

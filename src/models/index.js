@@ -127,7 +127,7 @@ Product.hasMany(OrderDetail, {foreignKey: "productId"})
         username:"Admin",
         password:hashPass,
         email:"admin@gmail.com",
-        numberPhone:2943242422,
+        numberPhone:29432,
         isAdmin:true,
         isSuspended:false
     })
