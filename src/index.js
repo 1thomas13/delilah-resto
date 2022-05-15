@@ -25,6 +25,10 @@ app.use('/payment', paymentRoutes)
 app.use('/address', addressRoutes)
 
 
+app.get('/', (req,res) =>{
+  return res.status(200).json('Index ok')
+})
+
 app.listen(config.server.port, () => {
   console.log(`Escuchando el puerto: ${config.server.port}`)
 })
