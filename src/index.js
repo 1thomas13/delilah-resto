@@ -11,6 +11,10 @@ app.use(cors())
 app.use(helmet())
 app.use(express.json());
 
+app.get('/',(req,res) => {
+	return res.status(200).json('Index OK. EC2 1')
+})
+
 const usersRoutes = require('./users/routes/routes')
 const productsRoutes = require('./products/routes/routes')
 const ordersRoutes = require('./orders/routes/routes')
