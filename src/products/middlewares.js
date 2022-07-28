@@ -54,10 +54,4 @@ const isAuthenticated = async (req, res, next) => {
   }
 }
 
-
-
-
-
-
-
 module.exports = { isAdmin, delete_modifyProduct, isAuthenticated }

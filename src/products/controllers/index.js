@@ -6,23 +6,14 @@ exports.allProducts = async (req, res) => {
   const products = await repositories.getAll();
   console.log('no')
   return res.status(200).json({ products: products });
-  
-  
 
-};
-
-exports.getProduct = async (req, res) => {
-  const productid = req.params.productid;
-
-  const product = await repositories.getOne(productid);
-
-  res.status(200).json({ product: product });
 };
 
 exports.createProduct = async (req, res) => {
-  const { name, price, available } = req.body;
 
-  if (!name || !price) {
+  const { name, price, available, image } = req.body;
+
+  if (!name || !price, !image) {
     res
       .status(400)
       .json({ message: "Falta ingresar datos para crear un producto" });
@@ -32,14 +23,17 @@ exports.createProduct = async (req, res) => {
     name: name,
     price: price,
     available: available,
+    image
   };
+
 
   await repositories.addProduct(newProduct);
  
   res.status(201).json({ message: "Producto agregado!" });
 };
 
-exports.modifyProduct = (req, res) => {
+exports.modifyProduct = async(req, res) => {
+
   const productid = req.params.productid;
   const { name, price, available } = req.body;
 
@@ -53,7 +47,7 @@ exports.modifyProduct = (req, res) => {
     name: name,
     price: price,
     available: available,
-  };
+  }
 
   repositories.modifyProduct(productid, { modifiedProduct });
   

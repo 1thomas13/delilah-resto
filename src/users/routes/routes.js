@@ -4,9 +4,11 @@ const middle = require('../middlewares')
 
 router.use(express.json())
 
-const { allUsers, register, login, suspendUser } = require('../controllers')
+const { allUsers, register, login, suspendUser,getUser } = require('../controllers')
 
 router.get('/all', middle.isAuthenticated, middle.isAdmin, allUsers)
+
+router.get('/', middle.isAuthenticated, getUser)
 
 router.post('/', middle.emailValidate, register)
 

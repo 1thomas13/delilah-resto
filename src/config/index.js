@@ -2,11 +2,11 @@ require('dotenv').config()
 
 exports.config = {
   DB: {
-    host: process.env.DB_HOST || "delilah-rds.c4u76wafbtm9.us-east-2.rds.amazonaws.com" ,
+    host: process.env.DB_HOST,
     port: process.env.DB_PORT || 3306,
     user: process.env.DB_USER || "admin",
-    password: process.env.DB_PASSWORD || 'SantiYthomi10',
-    database: process.env.DB_NAME || 'delilahresto'
+    password: process.env.DB_PASSWORD ,
+    database: process.env.DB_NAME
   },
   server: {
     port: process.env.NODE_PORT || 3000
@@ -17,6 +17,35 @@ exports.config = {
   redis:{
     host: process.env.REDIS_HOST,
     port: process.env.REDIS_PORT
+  },
+  expressSession: {
+    secret: process.env.SECRET_EXPRESS_SESSION || 'sessionsecret',
+  },
+  authGoogle: {
+    clientID: process.env.ID_GOOGLE,
+    clientSecret: process.env.SECRET_GOOGLE,
+    callbackURL: process.env.CALLBACK_GOOGLE
+  },
+  authFacebook: {
+    clientID: process.env.ID_FACEBOOK,
+    clientSecret: process.env.SECRET_FACEBOOK,
+    callbackURL: process.env.CALLBACK_FACEBOOK
+  },
+  authLinkedin: {
+    clientID: process.env.ID_LINKEDIN,
+    clientSecret: process.env.SECRET_LINKEDIN,
+    callbackURL: process.env.CALLBACK_LINKEDIN
+  },
+  authGitHub: {
+    clientID: process.env.ID_GITHUB,
+    clientSecret: process.env.SECRET_GITHUB,
+    callbackURL: process.env.CALLBACK_GITHUB
+  },
+  paypal:{
+    clientID: process.env.ID_PAYPAL,
+    secret: process.env.SECRET_PAYPAL,
+  },
+  mercadoPago:{
+    token: process.env.TOKEN_MERCADOPAGO,
   }
-
 }

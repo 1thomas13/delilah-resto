@@ -6,10 +6,10 @@ class User extends Model{}
 
 User.init({
     name: {type: Sequelize.STRING,allowNull: false},
-    username: {type: Sequelize.STRING,allowNull: false},
+    username: {type: Sequelize.STRING,allowNull: true},
     password: {type: Sequelize.STRING,allowNull: false,},
     email: {type: Sequelize.STRING,allowNull: false},
-    numberPhone: {type: Sequelize.INTEGER,allowNull: false},
+    numberPhone: {type: Sequelize.INTEGER,allowNull: true},
     isAdmin: {type: Sequelize.BOOLEAN,allowNull: false, defaultValue:false},
     isSuspended: {type: Sequelize.BOOLEAN,allowNull: false, defaultValue:false},
 
@@ -28,6 +28,7 @@ class Product extends Model{}
 Product.init({
     name: {type: Sequelize.STRING,allowNull: false},
     price: {type: Sequelize.INTEGER,allowNull: false},
+    image: {type: Sequelize.STRING,allowNull: false},
     available: {type: Sequelize.BOOLEAN,allowNull: false,defaultValue:true},
 
 },{sequelize,timestamps: false,modelName: "Products"})
@@ -109,16 +110,46 @@ Product.hasMany(OrderDetail, {foreignKey: "productId"})
     })
 
     await Product.create({
-        name:"Pizza Mozzarella",
-        price:700,
-        available:true
-    })
+        name: "Pizza Mozzarella",
+        price: 1000,
+        available: true,
+        image: "https://imgur.com/8e1W2T4.jpg",
+      });
+    
+      await Product.create({
+        name: "Hamburguesa",
+        price: 930,
+        available: true,
+        image: "https://imgur.com/a2bbWCB.jpg",
+      });
 
-    await Product.create({
-        name:"Hamburguesa Completa",
-        price:630,
-        available:true
-    })
+      await Product.create({
+        name: "Empanadas de carne",
+        price: 900,
+        available: true,
+        image: "https://imgur.com/DiQyI6U.jpg",
+      });
+
+      await Product.create({
+        name: "Lasaña",
+        price: 1500,
+        available: true,
+        image: "https://imgur.com/oZqi0gJ.jpg",
+      });
+
+      await Product.create({
+        name: "Parrilla completa",
+        price: 1600,
+        available: true,
+        image: "https://imgur.com/whrvYUE.jpg",
+      });
+
+      await Product.create({
+        name: "Napolitana con fritas",
+        price: 1600,
+        available: true,
+        image: "https://imgur.com/zwzCJqb.jpg",
+      });
 
     const hashPass = bcrypt.hashSync("1234", 8);
 
@@ -134,4 +165,13 @@ Product.hasMany(OrderDetail, {foreignKey: "productId"})
 
 })()
 
-module.exports = {User,Address,Product,OrderDetail,Order,PaymentMethod,OrderStatus}
+module.exports = {
+  User,
+  Address,
+  Product,
+  OrderDetail,
+  Order,
+  PaymentMethod,
+  OrderStatus,
+};
+

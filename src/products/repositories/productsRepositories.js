@@ -26,7 +26,7 @@ exports.deleteProduct = (productid) => {
 
 exports.modifyProduct = (productid, { modifiedProduct }) => {
   return models.Product.update({
-    name: modifiedProduct.name, price: modifiedProduct.price, available: modifiedProduct.available
+    name: modifiedProduct.name, price: modifiedProduct.price, available: modifiedProduct.available, image:modifiedProduct.image
   },
   {
     where: {

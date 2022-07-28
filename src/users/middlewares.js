@@ -12,7 +12,7 @@ const isAdmin = async (req, res, next) => {
   })
 
   if (findUser == undefined) {
-    res.status(403).json({ message: 'Debes ser administrador para acceder' })
+    res.status(403).json({ error: 'Debes ser administrador para acceder' })
     return
   }
 
@@ -23,7 +23,7 @@ const loginValidate = async (req, res, next) => {
   const { email, password } = req.body
 
   if (!email || !password) {
-    return res.status(400).json({ message: 'Debe ingresar el email y la contraseña para iniciar sesion' })
+    return res.status(400).json({ error: 'Debe ingresar el email y la contraseña para iniciar sesion' })
   }
 
   const findUser = await models.User.findOne({
@@ -33,7 +33,7 @@ const loginValidate = async (req, res, next) => {
   })
 
   if (findUser == undefined) {
-    return res.status(400).json({ message: 'Creedenciales incorrectas' })
+    return res.status(400).json({ error: 'Creedenciales incorrectas' })
   }
 
   if (findUser.isSuspended == true) {
@@ -43,18 +43,25 @@ const loginValidate = async (req, res, next) => {
   const hashPass = await bcrypt.compare(password, findUser.password)
 
   if (hashPass == false) {
-    return res.status(400).json({ message: 'Creedenciales incorrectas' })
+    return res.status(400).json({ error: 'Creedenciales incorrectas' })
   }
 
   return next()
 }
 
 const emailValidate = async (req, res, next) => {
+
+  const { name, username, password, email, numberPhone } = req.body
+
+  if (!name || !username || !password || !email || !numberPhone) {
+    return res.status(400).json({ error: 'Debes completar todos los campos' })
+  }
+
   const findUser = await models.User.findOne({ where: { email: req.body.email } })
 
   if (findUser == undefined) next()
 
-  else return res.status(400).json({ message: 'Ya existe una cuenta con ese email. Intente con otro' })
+  else return res.status(400).json({ error: 'Ya existe una cuenta con ese email. Intente con otro' })
 }
 
 const suspendValidate = async (req, res, next) => {
@@ -80,7 +87,7 @@ const isAuthenticated = async (req, res, next) => {
     const token = req.headers.authorization.split(' ')[1]
     jwt.verify(token, config.config.jwt.secret, (err, data) => {
       if (err) {
-        return res.status(400).json(err)
+        return res.status(400).json({error:err})
       } else {
         req.data = data
         next()
