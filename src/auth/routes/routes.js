@@ -9,15 +9,15 @@ const middlewares = require("../middlewares")
 
 const {login} = require("../../users/controllers");
 
-router.use(
-  session({
-    secret: config.config.expressSession.secret,
-    resave: true,
-    saveUninitialized: true,
-  })
-);
-router.use(passport.initialize());
-router.use(passport.session());
+// router.use(
+//   session({
+//     secret: config.config.expressSession.secret,
+//     resave: true,
+//     saveUninitialized: true,
+//   })
+// );
+// router.use(passport.initialize());
+// router.use(passport.session());
 
 
 

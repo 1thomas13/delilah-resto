@@ -32,7 +32,7 @@ app.get('/', (req,res) =>{
   return res.status(200).json('Index ok')
 })
 
-app.listen(config.server.port, () => {
+app.listen(3000, () => {
   console.log(`Escuchando el puerto: ${config.server.port}`)
 })
 
